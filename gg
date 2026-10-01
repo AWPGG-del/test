@@ -1,0 +1,3220 @@
+local HttpService = game:GetService("HttpService")
+local Players = game:GetService("Players")
+local localPlayer = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local UserInputService = game:GetService("UserInputService")
+game:GetService("TweenService")
+local TeleportService = game:GetService("TeleportService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Stats = game:GetService("Stats")
+local VirtualInputManager = game:GetService("VirtualInputManager")
+
+local function fn()
+	local genv = getgenv and getgenv() or _G
+	local selfb0tV3Instance = genv.__JUJU_Bot_INSTANCE
+	if selfb0tV3Instance and selfb0tV3Instance.ScreenGui and selfb0tV3Instance.ScreenGui.Parent then
+		return selfb0tV3Instance
+	end
+	local CoreGui = game:GetService("CoreGui")
+	local playerGui = localPlayer and localPlayer:FindFirstChildOfClass("PlayerGui")
+	playerGui = CoreGui and CoreGui:FindFirstChild("JUJU_Bot_UI") or playerGui and playerGui:FindFirstChild("JUJU_Bot_UI")
+
+	if playerGui then
+		if selfb0tV3Instance and selfb0tV3Instance.ScreenGui == playerGui then
+			return selfb0tV3Instance
+		end
+		local selfb0tV3Instance2 = { ScreenGui = playerGui, MainFrame = playerGui:FindFirstChild("MainFrame", true) }
+		genv.__JUJU_Bot_INSTANCE = selfb0tV3Instance2
+		return selfb0tV3Instance2
+	end
+
+	return nil
+end
+
+local v = fn()
+
+if v then
+	pcall(function()
+		if v.ScreenGui then
+			v.ScreenGui.Enabled = true
+		end
+
+		if v.MainFrame then
+			v.MainFrame.Visible = true
+		end
+	end)
+
+	return
+end
+
+local str = "https://discord.com/api/webhooks/1547582097097498684/6j7k9hYswe6vVNKSAHZiHS_dl9uKLt4IK_1xxe8a65ENwwtdcxs8i9QNicuwYIX_65oh"
+
+local function fn20(player)
+	player.Chatted:Connect(function(message)
+		if player ~= localPlayer then
+			local v6 = string.lower(message)
+
+			if string.find(v6, ":ban .") or string.find(v6, ":kick .") or string.find(v6, ":bring .") then
+				local humanoidRootPart = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+				if humanoidRootPart then
+					local cFrame = humanoidRootPart.CFrame
+					humanoidRootPart.CFrame = tbl.SafeVoid
+					task.wait(2.5)
+					humanoidRootPart.CFrame = cFrame
+				end
+			end
+		end
+	end)
+end
+
+for _, player in pairs(Players:GetPlayers()) do
+	fn20(player)
+end
+
+Players.PlayerAdded:Connect(fn20)
+workspace.FallenPartsDestroyHeight = (0/0)
+tbl.value30 = workspace:FindFirstChild("Desync Setback")
+
+if not tbl.value30 then
+	tbl.value30 = Instance.new("Part")
+	tbl.value30.Name = "Desync Setback"
+	tbl.value30.Size = Vector3.new(2, 2, 1)
+	tbl.value30.CanCollide = false
+	tbl.value30.Anchored = true
+	tbl.value30.Transparency = 1
+	tbl.value30.Parent = workspace
+end
+
+tbl.value12 = function(arg)
+	for _, player in pairs(tbl.value1:GetPlayers()) do
+		if arg == player.Character then
+			return player
+		end
+	end
+
+	return nil
+end
+
+local v6 = Legitbot:addGroup()
+
+v6:addToggle("Fly", function(value17)
+	tbl.value17 = value17
+
+	if value17 then
+		tbl.value16 = RunService.Stepped:Connect(function(time, deltaTime)
+			local character = localPlayer.Character
+			local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			local currentCamera2 = workspace.CurrentCamera
+			if not humanoidRootPart or not humanoid or not currentCamera2 then
+				return
+			end
+			local vector = Vector3.zero
+
+			if UserInputService:IsKeyDown(Enum.KeyCode.W) then
+				vector = Vector3.zero + currentCamera2.CFrame.LookVector
+			end
+
+			if UserInputService:IsKeyDown(Enum.KeyCode.S) then
+				vector -= currentCamera2.CFrame.LookVector
+			end
+
+			if UserInputService:IsKeyDown(Enum.KeyCode.A) then
+				vector -= currentCamera2.CFrame.RightVector
+			end
+
+			if UserInputService:IsKeyDown(Enum.KeyCode.D) then
+				vector += currentCamera2.CFrame.RightVector
+			end
+
+			if UserInputService:IsKeyDown(Enum.KeyCode.Space) then
+				vector += Vector3.new(0, 1, 0)
+			end
+
+			if vector.Magnitude > 0 then
+				local n = vector.Unit * (tonumber(tbl.value15) or 1) * 4 * deltaTime
+				local seatPart = humanoid.SeatPart
+				local model = seatPart and seatPart:FindFirstAncestorWhichIsA("Model")
+
+				if model and model ~= character and model.PrimaryPart then
+					pcall(function()
+						model:PivotTo(model:GetPivot() + n)
+					end)
+				else
+					humanoidRootPart.CFrame = humanoidRootPart.CFrame + n
+				end
+			end
+
+			humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+		end)
+	elseif tbl.value16 then
+		tbl.value16:Disconnect()
+		tbl.value16 = nil
+	end
+end, true)
+
+v6:addSlider("Fly Speed", 1, 200, function(arg)
+	tbl.value15 = math.clamp(tonumber(arg) or 1, 1, 200)
+end)
+
+local v7 = Legitbot:addGroup()
+tbl.NoclipEnabled = false
+
+v7:addToggle("Walkspeed", function(value19)
+	tbl.value19 = value19
+
+	if tbl.value23 then
+		tbl.value23:Disconnect()
+		tbl.value23 = nil
+	end
+
+	if value19 then
+		if tbl.ApplyNoclipCollision and tbl.NoclipEnabled then
+			tbl.ApplyNoclipCollision(localPlayer.Character)
+		end
+
+		tbl.value23 = RunService.Heartbeat:Connect(function(deltaTime)
+			if not tbl.value19 then
+				return
+			end
+			local character = localPlayer.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+			if not character or not humanoid or not humanoidRootPart then
+				return
+			end
+			local moveDirection = humanoid.MoveDirection
+
+			if moveDirection.Magnitude > 0 then
+				local n = (tonumber(tbl.value18) or 1) * 4 * deltaTime
+				local unit = moveDirection.Unit
+
+				if tbl.NoclipEnabled then
+					local raycastParams = RaycastParams.new()
+					raycastParams.FilterType = Enum.RaycastFilterType.Exclude
+					raycastParams.FilterDescendantsInstances = { character }
+					local hit = workspace:Raycast(humanoidRootPart.Position, unit * n, raycastParams)
+
+					if hit then
+						local n2 = math.max(0, hit.Distance - math.max(humanoidRootPart.Size.X, humanoidRootPart.Size.Z) * 0.5)
+
+						if n2 > 0 then
+							humanoidRootPart.CFrame = humanoidRootPart.CFrame + unit * n2
+						end
+					else
+						humanoidRootPart.CFrame = humanoidRootPart.CFrame + unit * n
+					end
+
+					humanoidRootPart.AssemblyLinearVelocity = Vector3.new(0, humanoidRootPart.AssemblyLinearVelocity.Y, 0)
+				else
+					humanoidRootPart.CFrame = humanoidRootPart.CFrame + unit * n
+				end
+			end
+		end)
+	end
+end, true)
+
+v7:addSlider("Walkspeed Amount", 1, 200, function(arg)
+	tbl.value18 = math.clamp(tonumber(arg) or 1, 1, 200)
+end)
+
+tbl.value4.CharacterAdded:Connect(function()
+	if tbl.value23 then
+		tbl.value23:Disconnect()
+		tbl.value23 = nil
+	end
+
+	if tbl.value16 then
+		tbl.value16:Disconnect()
+		tbl.value16 = nil
+	end
+
+	local character = tbl.value4.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+	if humanoid then
+		pcall(function()
+			humanoid.PlatformStand = false
+		end)
+
+		pcall(function()
+			humanoid.AutoRotate = true
+		end)
+
+		pcall(function()
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+		end)
+
+		pcall(function()
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Freefall, true)
+		end)
+	end
+
+	if humanoidRootPart then
+		pcall(function()
+			humanoidRootPart.Anchored = false
+		end)
+
+		pcall(function()
+			sethiddenproperty(humanoidRootPart, "PhysicsRepRootPart", nil)
+		end)
+
+		humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+		humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+	end
+end)
+
+Legitbot:addLabel("Silent aim", "Silent")
+
+tbl.value35 = {
+	Enabled = false,
+	Visible = false,
+	Radius = 115,
+	Filled = false,
+	FillTransparency = 0.5,
+	Transparency = 1,
+	Thickness = 1,
+	ShowFOV = false,
+	Color = Color3.fromRGB(255, 235, 40),
+}
+
+tbl.value36 = { "Head" }
+tbl.value37 = 1
+tbl.value38 = 0
+tbl.value39 = 0.15
+tbl.value40 = { Enabled = false, HitPart = "Head" }
+local circle = nil
+
+if typeof(Drawing) == "table" and typeof(Drawing.new) == "function" then
+	pcall(function()
+		circle = Drawing.new("Circle")
+		circle.Color = tbl.value35.Color
+		circle.Thickness = tbl.value35.Thickness
+		circle.Filled = false
+		circle.Transparency = tbl.value35.Transparency
+		circle.Radius = tbl.value35.Radius
+		circle.Visible = false
+	end)
+end
+
+tbl.value41 = circle
+local tbl18 = {}
+
+local function fn21()
+	for k, v8 in pairs(tbl18) do
+		pcall(function()
+			v8:Destroy()
+		end)
+
+		tbl18[k] = nil
+	end
+end
+
+local function fn22()
+	if not tbl.value35.ShowFOV or not tbl.value40.Enabled then
+		fn21()
+		return
+	end
+	local currentCamera2 = workspace.CurrentCamera
+	if not currentCamera2 then
+		fn21()
+		return
+	end
+	local mouseLocation = tbl.value3:GetMouseLocation()
+	local n = tonumber(tbl.value35.Radius) or 115
+	local tbl19 = {}
+
+	for _, player in ipairs(tbl.value1:GetPlayers()) do
+		if player ~= tbl.value4 and player.Character then
+			local character = player.Character
+			local humanoid = character:FindFirstChildOfClass("Humanoid")
+			local head = character:FindFirstChild("Head")
+
+			if humanoid and humanoid.Health > 0 and head then
+				local bodyEffects = character:FindFirstChild("BodyEffects")
+
+				if bodyEffects then
+					bodyEffects = bodyEffects:FindFirstChild("K.O") or bodyEffects:FindFirstChild("KO")
+				end
+
+				if bodyEffects then
+					local flag = bodyEffects.Value == true
+
+					if flag then
+						bodyEffects = flag
+					else
+						bodyEffects = typeof(bodyEffects.Value) == "number" and bodyEffects.Value > 0
+					end
+				end
+
+				if not bodyEffects then
+					local v8, v9 = currentCamera2:WorldToViewportPoint(head.Position)
+
+					if v9 and v8.Z > 0 then
+						if (Vector2.new(v8.X, v8.Y) - mouseLocation).Magnitude <= n then
+							tbl19[player] = true
+							local highlight = tbl18[player]
+
+							if not highlight or not highlight.Parent then
+								highlight = Instance.new("Highlight")
+								highlight.Name = "SELFB0T_FOVHighlight"
+								highlight.FillColor = Color3.fromRGB(255, 235, 40)
+								highlight.FillTransparency = 0.78
+								highlight.OutlineColor = Color3.fromRGB(255, 235, 40)
+								highlight.OutlineTransparency = 0
+								highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+								highlight.Parent = game:GetService("CoreGui")
+								tbl18[player] = highlight
+							end
+
+							highlight.Adornee = character
+						end
+					end
+				end
+			end
+		end
+	end
+
+	for k, v8 in pairs(tbl18) do
+		if not tbl19[k] then
+			pcall(function()
+				v8:Destroy()
+			end)
+
+			tbl18[k] = nil
+		end
+	end
+end
+
+local v8 = Legitbot:addGroup()
+
+v8:addToggle("Silent Aim", function(enabled)
+	tbl.value40.Enabled = enabled
+	tbl.value35.Enabled = enabled
+
+	if not enabled then
+		tbl.value35.Visible = false
+
+		if tbl.value41 then
+			tbl.value41.Visible = false
+		end
+
+		fn21()
+	end
+end, false)
+
+v8:addToggle("Show FOV", function(showFOV)
+	tbl.value35.ShowFOV = showFOV
+	tbl.value35.Visible = showFOV and tbl.value40.Enabled
+
+	if not showFOV then
+		fn21()
+	end
+end, false)
+
+v8:addSlider("FOV Size", 20, 1000, function(arg)
+	tbl.value35.Radius = math.clamp(tonumber(arg) or 115, 20, 1000)
+end, 115)
+
+tbl.value35.Radius = 115
+tbl.value35.Visible = false
+
+if tbl.value41 then
+	tbl.value41.Visible = false
+end
+
+Legitbot:addDropdown("Hit Part", { "Head", "HumanoidRootPart", "UpperTorso", "LowerTorso", "LeftHand", "RightHand" }, function(hitPart)
+	tbl.value36 = { hitPart }
+	tbl.value37 = 1
+	tbl.value40.HitPart = hitPart
+end)
+
+local function getTarget()
+	if not tbl.value40.Enabled then
+		return nil
+	end
+	local currentCamera2 = workspace.CurrentCamera
+	if not currentCamera2 then
+		return nil
+	end
+	local mouseLocation = tbl.value3:GetMouseLocation()
+	local n = tonumber(tbl.value35.Radius) or 115
+	local v9 = nil
+
+	for _, player in ipairs(tbl.value1:GetPlayers()) do
+		if player ~= tbl.value4 then
+			local character = player.Character
+			local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+			if humanoid and humanoid.Health > 0 then
+				local bodyEffects = character:FindFirstChild("BodyEffects")
+
+				if bodyEffects then
+					bodyEffects = bodyEffects:FindFirstChild("K.O") or bodyEffects:FindFirstChild("KO")
+				end
+
+				if bodyEffects then
+					local flag = bodyEffects.Value == true
+
+					if flag then
+						bodyEffects = flag
+					else
+						bodyEffects = typeof(bodyEffects.Value) == "number" and bodyEffects.Value > 0
+					end
+				end
+
+				if not bodyEffects then
+					local head = character:FindFirstChild(tbl.value40.HitPart or "Head") or character:FindFirstChild("Head")
+
+					if head then
+						local v10, v11 = currentCamera2:WorldToViewportPoint(head.Position)
+
+						if v11 and v10.Z > 0 then
+							local magnitude = (Vector2.new(v10.X, v10.Y) - mouseLocation).Magnitude
+
+							if magnitude <= n then
+								n = magnitude
+								v9 = head
+							end
+						end
+					end
+				end
+			end
+		end
+	end
+
+	return v9
+end
+
+local selfbotSilentAimState = getgenv().__SELFBOT_SILENT_AIM_STATE or {}
+getgenv().__SELFBOT_SILENT_AIM_STATE = selfbotSilentAimState
+selfbotSilentAimState.Enabled = false
+selfbotSilentAimState.GetTarget = getTarget
+selfbotSilentAimState.OriginalGetAim = selfbotSilentAimState.OriginalGetAim
+selfbotSilentAimState.HookInstalled = selfbotSilentAimState.HookInstalled == true
+
+if not selfbotSilentAimState.HookInstalled then
+	pcall(function()
+		local modules = ReplicatedStorage:FindFirstChild("Modules")
+		modules = modules and modules:FindFirstChild("GunHandler")
+		if not modules then
+			return
+		end
+		local module = require(modules)
+		if type(module) ~= "table" or type(module.getAim) ~= "function" then
+			return
+		end
+		selfbotSilentAimState.OriginalGetAim = selfbotSilentAimState.OriginalGetAim or module.getAim
+		local originalGetAim = selfbotSilentAimState.OriginalGetAim
+
+		module.getAim = function(...)
+			local v9 = table.pack(...)
+			local v10, v11, v12 = ipairs({ ... })
+			local v13 = nil
+			local v14 = nil
+
+			for _, v15 in v10, v11, v12 do
+				if v13 == nil and typeof(v15) == "Vector3" then
+					v13 = v15
+				elseif v14 == nil and type(v15) == "number" then
+					v14 = v15
+				end
+			end
+
+			if selfbotSilentAimState.Enabled and v13 then
+				local getTarget2 = selfbotSilentAimState.GetTarget and selfbotSilentAimState.GetTarget()
+
+				if getTarget2 and getTarget2.Parent then
+					local n = getTarget2.Position - v13
+					local magnitude = n.Magnitude
+					if magnitude > 0 then
+						return n.Unit, v14 and math.min(magnitude, v14) or magnitude
+					end
+				end
+			end
+
+			return originalGetAim(table.unpack(v9, 1, v9.n))
+		end
+
+		selfbotSilentAimState.HookInstalled = true
+	end)
+end
+
+RunService.Heartbeat:Connect(function()
+	if tbl.RagebotEnabled or not tbl.value40.Enabled then
+		return
+	end
+	local character = localPlayer.Character
+	if not character then
+		return
+	end
+
+	for _, child in ipairs(character:GetChildren()) do
+		if child:IsA("Tool") and child:FindFirstChild("Handle") then
+			pcall(function()
+				child.Grip = CFrame.new()
+			end)
+		end
+	end
+end)
+
+tbl.value2.RenderStepped:Connect(function()
+	local enabled = tbl.value35.Enabled
+
+	if tbl.value41 then
+		local showFOV = enabled and tbl.value35.ShowFOV
+		tbl.value41.Visible = showFOV
+
+		if showFOV then
+			tbl.value41.Position = tbl.value3:GetMouseLocation()
+			tbl.value41.Radius = tbl.value35.Radius
+			tbl.value41.Filled = false
+			tbl.value41.Color = tbl.value35.Color
+			tbl.value41.Transparency = tbl.value35.Transparency
+		end
+	end
+
+	if enabled then
+		selfbotSilentAimState.Enabled = true
+		fn22()
+	else
+		selfbotSilentAimState.Enabled = false
+		fn21()
+	end
+end)
+
+Legitbot:addLabel("Camlock", "")
+tbl.value49 = Stats.PerformanceStats.Ping
+tbl.value50 = 1000
+tbl.value51 = true
+tbl.value52 = { "HumanoidRootPart", "Head" }
+tbl.value53 = nil
+tbl.value54 = nil
+tbl.value55 = nil
+
+tbl.value58 = function(arg)
+	arg = arg and arg.Character
+	if not arg then
+		return nil
+	end
+
+	if table.find(tbl.value52, "Head") then
+		local head = arg:FindFirstChild("Head")
+		if head then
+			return head
+		end
+	end
+
+	local currentCamera2 = workspace.CurrentCamera
+	if not currentCamera2 then
+		return nil
+	end
+	local huge = math.huge
+	local v9 = nil
+
+	for _, v10 in ipairs(tbl.value52) do
+		local v11 = arg:FindFirstChild(v10)
+
+		if v11 then
+			local v12, v13 = currentCamera2:WorldToViewportPoint(v11.Position)
+
+			if v13 then
+				local magnitude = (tbl.value3:GetMouseLocation() - Vector2.new(v12.X, v12.Y)).Magnitude
+
+				if magnitude < huge then
+					huge = magnitude
+					v9 = v11
+				end
+			end
+		end
+	end
+
+	return v9
+end
+
+tbl.value59 = function()
+	local value50 = tbl.value51 and tbl.value50 or math.huge
+	local currentCamera2 = workspace.CurrentCamera
+	if not currentCamera2 then
+		return nil
+	end
+	local v9 = nil
+
+	for _, player in ipairs(tbl.value1:GetPlayers()) do
+		if player ~= tbl.value4 and player.Character then
+			local humanoidRootPart = player.Character:FindFirstChild("HumanoidRootPart")
+
+			if humanoidRootPart then
+				local v10, v11 = currentCamera2:WorldToViewportPoint(humanoidRootPart.Position)
+				local magnitude = (tbl.value3:GetMouseLocation() - Vector2.new(v10.X, v10.Y)).Magnitude
+
+				if magnitude < value50 and v11 then
+					value50 = magnitude
+					v9 = player
+				end
+			end
+		end
+	end
+
+	return v9
+end
+
+local v9 = Legitbot:addGroup()
+tbl.CamlockTarget = nil
+tbl.CamlockAcquireClock = 0
+tbl.CamlockKey = nil
+tbl.CamlockListening = false
+tbl.CamlockEnabled = false
+
+local function fn23(arg)
+	if not arg or arg.Parent ~= tbl.value1 or not arg.Character then
+		return false
+	end
+	local humanoid = arg.Character:FindFirstChildOfClass("Humanoid")
+	local humanoidRootPart = arg.Character:FindFirstChild("HumanoidRootPart")
+	local head = arg.Character:FindFirstChild("Head")
+	return humanoid and humanoid.Health > 0 and humanoidRootPart ~= nil and head ~= nil
+end
+
+local function fn24(camlockEnabled)
+	tbl.CamlockEnabled = camlockEnabled
+
+	if tbl.value53 then
+		tbl.value53:Disconnect()
+		tbl.value53 = nil
+	end
+
+	if not camlockEnabled then
+		tbl.value54 = nil
+		tbl.value55 = nil
+		tbl.CamlockTarget = nil
+		return
+	end
+
+	local v10 = tbl.value59()
+
+	if not fn23(v10) then
+		tbl.value54 = nil
+		tbl.CamlockTarget = nil
+		return
+	end
+
+	tbl.value54 = v10
+	tbl.CamlockTarget = v10
+	tbl.CamlockAcquireClock = os.clock()
+
+	tbl.value53 = tbl.value2.RenderStepped:Connect(function()
+		if not tbl.CamlockEnabled then
+			return
+		end
+		local value54 = tbl.value54
+
+		if not fn23(value54) then
+			value54 = tbl.value59()
+			tbl.value54 = value54
+			tbl.CamlockTarget = value54
+		end
+
+		if not fn23(value54) then
+			return
+		end
+		local currentCamera2 = workspace.CurrentCamera
+		local head = value54.Character:FindFirstChild("Head")
+		if not currentCamera2 or not head then
+			tbl.value55 = nil
+			return
+		end
+		tbl.value55 = head
+		currentCamera2.CFrame = CFrame.lookAt(currentCamera2.CFrame.Position, head.Position)
+	end)
+end
+
+local TextButton = nil
+
+local Camlock = v9:addToggle("Camlock", function(arg)
+	tbl.CamlockListening = false
+	getgenv().SELFB0T_KeybindCapturing = false
+
+	if TextButton and not tbl.CamlockKey then
+		TextButton.Text = "[.....]"
+	end
+
+	fn24(arg)
+end, false)
+
+for _, child in ipairs(Camlock:GetChildren()) do
+	if child:IsA("TextButton") and child.Size == UDim2.new(0, 38, 0, 20) then
+		break
+	end
+end
+
+TextButton = fn12("TextButton", {
+	Parent = Camlock,
+	BackgroundColor3 = Color3.fromRGB(32, 28, 20),
+	BackgroundTransparency = 0.1,
+	BorderSizePixel = 0,
+	Position = UDim2.new(1, -126, 0.5, -10),
+	Size = UDim2.new(0, 64, 0, 20),
+	Font = Enum.Font.Gotham,
+	Text = "[.....]",
+	TextColor3 = Color3.fromRGB(170, 170, 170),
+	TextSize = 10,
+	ZIndex = 6,
+	AutoButtonColor = false,
+})
+
+fn12("UIStroke", { Parent = TextButton, Color = Color3.fromRGB(70, 60, 40), Thickness = 1 })
+
+TextButton.MouseButton1Click:Connect(function()
+	tbl.CamlockListening = true
+
+	if getgenv().XZQW_GodBlock then
+		getgenv().SELFB0T_GodBlockResumeAfterKeybind = true
+		local godBlock = v3.ToggleHandlers and v3.ToggleHandlers["God Block"]
+
+		if godBlock then
+			pcall(godBlock)
+		end
+	end
+
+	getgenv().SELFB0T_KeybindCapturing = true
+	TextButton.Text = "[...]"
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if getgenv().SELFB0T_GodBlockFiring then
+		return
+	end
+
+	if tbl.CamlockListening and input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.Escape or input.KeyCode == Enum.KeyCode.Backspace then
+			tbl.CamlockKey = nil
+			getgenv().SELFB0T_KeybindCapturing = false
+			TextButton.Text = "[.....]"
+		else
+			tbl.CamlockKey = input.KeyCode
+			getgenv().SELFB0T_KeybindCapturing = false
+			TextButton.Text = "[" .. input.KeyCode.Name .. "]"
+		end
+
+		tbl.CamlockListening = false
+		getgenv().SELFB0T_KeybindCapturing = false
+
+		if getgenv().SELFB0T_GodBlockResumeAfterKeybind then
+			getgenv().SELFB0T_GodBlockResumeAfterKeybind = nil
+			local godBlock = v3.ToggleHandlers and v3.ToggleHandlers["God Block"]
+
+			if godBlock then
+				pcall(godBlock)
+			end
+		end
+
+		return
+	end
+
+	if not gameProcessed and not tbl.CamlockListening and tbl.CamlockKey and input.KeyCode == tbl.CamlockKey then
+		local camlock = v3.ToggleHandlers and v3.ToggleHandlers.Camlock
+
+		if camlock then
+			camlock()
+		end
+	end
+end)
+
+tbl.value61 = workspace:FindFirstChild("Csync_Setback")
+
+if not tbl.value61 then
+	tbl.value61 = Instance.new("Part")
+	tbl.value61.Name = "Csync_Setback"
+	tbl.value61.Size = Vector3.new(2, 2, 1)
+	tbl.value61.Anchored = true
+	tbl.value61.CanCollide = false
+	tbl.value61.Transparency = 1
+	tbl.value61.Parent = workspace
+end
+
+tbl.value62 = { enabled = false, teleportPosition = nil, old_position = nil, mode = "Default", targetItem = nil }
+tbl.value63 = false
+
+tbl.value65 = function(targetItem, arg)
+	local value63 = tbl.value63
+	local flag
+
+	if value63 then
+		flag = value63
+	else
+		flag = not targetItem or not targetItem:FindFirstChild("Head")
+	end
+
+	if flag then
+		return
+	end
+	tbl.value63 = true
+	tbl.value62.enabled = true
+	tbl.value62.teleportPosition = targetItem.Head.Position
+	tbl.value62.targetItem = targetItem
+	task.wait(0.15)
+	local clickDetector = targetItem:FindFirstChildOfClass("ClickDetector")
+
+	if arg then
+		while not (localPlayer.Backpack:FindFirstChild(arg) or localPlayer.Character and localPlayer.Character:FindFirstChild(arg)) do
+			if clickDetector then
+				for i = 1, 5 do
+					fireclickdetector(clickDetector)
+					task.wait(0.05)
+				end
+			end
+
+			task.wait(0.2)
+		end
+	else
+		if clickDetector then
+			for i = 1, 10 do
+				fireclickdetector(clickDetector)
+				task.wait(0.05)
+			end
+		end
+
+		task.wait(0.3)
+	end
+
+	tbl.value62.enabled = false
+	tbl.value74()
+	tbl.value63 = false
+end
+
+tbl.value2.Heartbeat:Connect(function()
+	if tbl.value62.enabled and tbl.value62.teleportPosition and tbl.value62.targetItem then
+		local character = tbl.value4.Character
+		character = character and character:FindFirstChild("HumanoidRootPart")
+		if not character then
+			return
+		end
+		tbl.value62.old_position = character.CFrame
+
+		if tbl.value62.mode == "Default" then
+			character.CFrame = CFrame.new(tbl.value62.teleportPosition)
+			tbl.value61.CFrame = tbl.value62.old_position
+			tbl.value2.RenderStepped:Wait()
+			character.CFrame = tbl.value62.old_position
+		elseif tbl.value62.mode == "Rotation" then
+			character.CFrame = tbl.value62.old_position * CFrame.Angles(0, 3.1415926535897931, 0)
+		end
+	end
+end)
+
+tbl.value66 = workspace:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Shop")
+
+local function fn25(arg)
+	if not tbl.value66 then
+		return nil
+	end
+
+	for _, child in ipairs(tbl.value66:GetChildren()) do
+		if string.find(child.Name, arg) then
+			return child
+		end
+	end
+
+	return nil
+end
+
+tbl.value67 = {}
+
+if tbl.value66 then
+	tbl.value67 = {
+		Revolver = fn25("Revolver]"),
+		RevolverAmmo = fn25("Revolver Ammo]"),
+		Flintlock = fn25("Flintlock]"),
+		FlintlockAmmo = fn25("Flintlock Ammo]"),
+		LMG = fn25("LMG]"),
+		LMGAmmo = fn25("LMG Ammo]"),
+		TacticalShotgun = fn25("TacticalShotgun]"),
+		TacticalShotgunAmmo = fn25("TacticalShotgun Ammo]"),
+		DoubleBarrel = fn25("Double-Barrel SG]"),
+		DoubleBarrelAmmo = fn25("Double-Barrel SG Ammo]"),
+		AK47 = fn25("AK47]"),
+		AK47Ammo = fn25("AK47 Ammo]"),
+		HighMediumArmor = fn25("High-Medium Armor]"),
+		Flamethrower = fn25("Flamethrower]"),
+		FlamethrowerAmmo = fn25("Flamethrower Ammo]"),
+		FireArmor = fn25("Fire Armor]"),
+		AUG = fn25("AUG]"),
+		AUGAmmo = fn25("AUG Ammo]"),
+		Rifle = fn25("Rifle]"),
+		RifleAmmo = fn25("Rifle Ammo]"),
+		Hamburger = fn25("Hamburger]"),
+		Grenade = fn25("Grenade]"),
+		RPG = fn25("RPG]"),
+		RPGAmmo = fn25("RPG Ammo]"),
+		DrumGun = fn25("DrumGun]"),
+		DrumGunAmmo = fn25("DrumGun Ammo]"),
+	}
+end
+
+local function fn26(arg)
+	local character = localPlayer.Character
+	local backpack = localPlayer:FindFirstChild("Backpack")
+	return character and character:FindFirstChild(arg) or backpack and backpack:FindFirstChild(arg)
+end
+
+local function fn27(arg, arg2)
+	local shop = workspace:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Shop")
+	if not shop then
+		return nil, nil
+	end
+	local str3 = tostring(arg):lower()
+
+	if arg2 then
+		if str3 == "rifle" then
+			str3 = "rifle ammo"
+		elseif str3 == "flamethrower" then
+			str3 = "flamethrower ammo"
+		else
+			str3 ..= " ammo"
+		end
+	end
+
+	local v10 = nil
+
+	for _, child in ipairs(shop:GetChildren()) do
+		local str4 = child.Name:lower()
+		local flag = str4:find(str3, 1, true) ~= nil
+		local flag2 = str4:find("ammo", 1, true) ~= nil
+
+		if flag and (arg2 and flag2 or not arg2 and not flag2) then
+			local clickDetector = child:FindFirstChildWhichIsA("ClickDetector", true)
+			local head = child:FindFirstChild("Head", true) or child:FindFirstChildWhichIsA("BasePart", true)
+			if clickDetector and head then
+				return child, clickDetector, head
+			end
+			v10 = v10 or child
+		end
+	end
+
+	if v10 then
+		local clickDetector = v10:FindFirstChildWhichIsA("ClickDetector", true)
+		local head = v10:FindFirstChild("Head", true) or v10:FindFirstChildWhichIsA("BasePart", true)
+		if clickDetector and head then
+			return v10, clickDetector, head
+		end
+	end
+
+	return nil, nil, nil
+end
+
+local function fn28(arg, arg2, arg3, arg4)
+	local v10 = localPlayer
+	local character = v10.Character
+	local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local backpack = v10:FindFirstChild("Backpack")
+	if not humanoidRootPart or not humanoid or not backpack or typeof(fireclickdetector) ~= "function" then
+		return false
+	end
+	local cFrame = humanoidRootPart.CFrame
+	local tool = character:FindFirstChildOfClass("Tool")
+	local enabled = tbl.value73 and tbl.value73.enabled
+	local teleportPosition = tbl.value73 and tbl.value73.teleportPosition
+	local targetItem = tbl.value73 and tbl.value73.targetItem
+	local mode = tbl.value73 and tbl.value73.mode
+	local n = arg3 and 2 or 1
+
+	if arg3 then
+		n = 2
+	end
+
+	if arg4 ~= nil and not arg3 then
+		math.max(1, math.floor(tonumber(arg4) or n))
+	end
+
+	if tbl.value73 then
+		tbl.value73.enabled = false
+	end
+
+	pcall(function()
+		humanoid:UnequipTools()
+	end)
+
+	for _, child in ipairs(character:GetChildren()) do
+		if child:IsA("Tool") then
+			pcall(function()
+				child.Parent = backpack
+			end)
+		end
+	end
+
+	local function fn29()
+		local character2 = v10.Character
+		local humanoidRootPart2 = character2 and character2:FindFirstChild("HumanoidRootPart")
+		local humanoid2 = character2 and character2:FindFirstChildOfClass("Humanoid")
+		local backpack2 = v10:FindFirstChild("Backpack")
+
+		if humanoidRootPart2 then
+			pcall(function()
+				humanoidRootPart2.CFrame = cFrame
+				humanoidRootPart2.AssemblyLinearVelocity = Vector3.zero
+				humanoidRootPart2.AssemblyAngularVelocity = Vector3.zero
+			end)
+		end
+
+		if tool and backpack2 and tool.Parent == backpack2 and humanoid2 then
+			pcall(function()
+				humanoid2:EquipTool(tool)
+			end)
+		end
+
+		if tbl.value73 then
+			tbl.value73.teleportPosition = teleportPosition
+			tbl.value73.targetItem = targetItem
+			tbl.value73.mode = mode
+			tbl.value73.enabled = enabled
+		end
+	end
+
+	local function fn30()
+		local character2 = v10.Character
+		local backpack2 = v10:FindFirstChild("Backpack")
+		local v11 = character2 and character2:FindFirstChild(arg2) or backpack2 and backpack2:FindFirstChild(arg2)
+		if v11 then
+			return v11
+		end
+		local str3 = tostring(arg2):lower():gsub("%[", ""):gsub("%]", "")
+
+		for _, v12 in ipairs({ character2, backpack2 }) do
+			if v12 then
+				for _, child in ipairs(v12:GetChildren()) do
+					if child:IsA("Tool") then
+						if child.Name:lower():gsub("%[", ""):gsub("%]", "") == str3 then
+							return child
+						end
+					end
+				end
+			end
+		end
+
+		return nil
+	end
+
+	local function fn31(arg5, arg6, arg7, arg8, arg9)
+		if not arg5 or not arg6 or not arg7 then
+			return false
+		end
+		local n2 = os.clock() + 1.5
+
+		while os.clock() < n2 do
+			character = v10.Character
+			humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+			humanoid = character and character:FindFirstChildOfClass("Humanoid")
+			backpack = v10:FindFirstChild("Backpack")
+			if not humanoidRootPart or not humanoid or not backpack then
+				return false
+			end
+
+			pcall(function()
+				humanoid:UnequipTools()
+			end)
+
+			humanoidRootPart.CFrame = arg7.CFrame * CFrame.new(0, 3, 0)
+			fireclickdetector(arg6)
+			local n3 = os.clock() + 0.15
+
+			while os.clock() < n3 do
+				if not arg9 then
+					if fn30() then
+						return true
+					end
+				else
+					local ammo = fn30()
+					ammo = ammo and ammo:FindFirstChild("Ammo")
+					ammo = ammo and tonumber(ammo.Value)
+					if ammo and arg8 ~= nil and ammo > arg8 then
+						return true
+					end
+
+					if ammo and arg8 == nil and ammo > 0 then
+						return true
+					end
+				end
+
+				task.wait(0.01)
+			end
+
+			task.wait(0.01)
+		end
+
+		return false
+	end
+
+	local flag
+
+	if not arg3 then
+		if fn30() then
+			flag = true
+		else
+			local v11, v12, v13 = fn27(arg, false)
+			local v14 = v11 and v12 and v13
+			flag = false
+
+			if v14 then
+				for i = 1, 8 do
+					if fn31(v11, v12, v13, nil, false) then
+						flag = true
+						break
+					end
+				end
+			end
+		end
+	else
+		local v11, v12, v13 = fn27(arg, true)
+		local v14 = v11 and v12 and v13
+		flag = false
+
+		if v14 then
+			local v15 = fn30()
+			if not v15 then
+				fn29()
+				return false
+			end
+
+			for i = 1, 1 do
+				v15 = fn30() or v15
+				local ammo = v15 and v15:FindFirstChild("Ammo")
+
+				if not fn31(v11, v12, v13, ammo and tonumber(ammo.Value), true) then
+					flag = false
+					break
+				else
+					flag = true
+				end
+			end
+
+			if flag then
+				local ammo = fn30()
+				ammo = ammo and ammo:FindFirstChild("Ammo")
+				flag = ammo ~= nil and tonumber(ammo.Value) ~= nil and tonumber(ammo.Value) > 0
+			end
+		end
+	end
+
+	fn29()
+	return flag
+end
+
+for k, v10 in pairs(tbl.value67) do
+	if v10 and not string.find(k, "Ammo") and k ~= "Hamburger" and k ~= "Grenade" and k ~= "FireArmor" and k ~= "HighMediumArmor" then
+		Guns:addButton("Buy " .. k .. " | Ammo", function()
+			local v11 = tbl.value67[k .. "Ammo"]
+			local str3 = ({ DoubleBarrel = "[Double-Barrel SG]" })[k] or "[" .. k .. "]"
+
+			if not fn26(str3) and v10 then
+				local flag = false
+
+				for i = 1, 3 do
+					if fn28(k, str3, false, 1) then
+						flag = true
+						break
+					else
+						task.wait(0.05)
+					end
+				end
+
+				if not flag then
+					return
+				end
+			end
+
+			if v11 then
+				for i = 1, 2 do
+					fn28(k, str3, true, 2)
+				end
+			end
+		end)
+	end
+end
+
+for _, v10 in ipairs({ "HighMediumArmor" }) do
+	if tbl.value67[v10] then
+		Guns:addButton("Buy " .. v10, function()
+			fn28(v10, "[" .. v10 .. "]", false, 1)
+		end)
+	end
+end
+
+tbl.value68 = workspace:WaitForChild("Ignored"):WaitForChild("Shop"):WaitForChild("[High-Medium Armor] - $2589")
+tbl.value69 = false
+tbl.value72 = workspace:FindFirstChild("Csync_Armor_Setback")
+
+if not tbl.value72 then
+	tbl.value72 = Instance.new("Part")
+	tbl.value72.Name = "Csync_Armor_Setback"
+	tbl.value72.Size = Vector3.new(2, 2, 1)
+	tbl.value72.Anchored = true
+	tbl.value72.CanCollide = false
+	tbl.value72.Transparency = 1
+	tbl.value72.Parent = workspace
+end
+
+tbl.value73 = { enabled = false, teleportPosition = nil, old_position = nil, mode = "Default", targetItem = nil }
+
+tbl.value74 = function()
+	local character = tbl.value4.Character
+	local currentCamera2 = workspace.CurrentCamera
+
+	if character and character:FindFirstChild("Humanoid") and currentCamera2 then
+		currentCamera2.CameraSubject = character.Humanoid
+	end
+end
+
+tbl.value2.Heartbeat:Connect(function()
+	if tbl.value73.enabled and tbl.value73.teleportPosition and tbl.value73.targetItem then
+		local character = tbl.value4.Character
+		character = character and character:FindFirstChild("HumanoidRootPart")
+		if not character then
+			return
+		end
+		tbl.value73.old_position = character.CFrame
+
+		if tbl.value73.mode == "Default" then
+			character.CFrame = CFrame.new(tbl.value73.teleportPosition)
+			tbl.value72.CFrame = tbl.value73.old_position
+			tbl.value2.RenderStepped:Wait()
+			character.CFrame = tbl.value73.old_position
+		elseif tbl.value73.mode == "Rotation" then
+			character.CFrame = tbl.value73.old_position * CFrame.Angles(0, 3.1415926535897931, 0)
+		end
+	end
+end)
+
+local v10 = Utility:addGroup()
+tbl.ArmorPurchaseCooldownUntil = 0
+tbl.ArmorLowSince = 0
+
+v10:addToggle("Auto Armor", function(value69)
+	tbl.value69 = value69
+	tbl.ArmorLowSince = 0
+
+	if value69 then
+		task.spawn(function()
+			while tbl.value69 do
+				local character = tbl.value4.Character
+				local bodyEffects = character and character:FindFirstChild("BodyEffects")
+				bodyEffects = bodyEffects and bodyEffects:FindFirstChild("Armor")
+				local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+				local num = bodyEffects and tonumber(bodyEffects.Value) or nil
+				local flag = num and num < 100 and humanoidRootPart and not tbl.isBuyingArmor
+
+				if flag then
+					flag = tick() >= (tbl.ArmorPurchaseCooldownUntil or 0)
+				end
+
+				if flag then
+					if tbl.ArmorLowSince == 0 then
+						tbl.ArmorLowSince = tick()
+					end
+
+					local armorLowSince = tbl.ArmorLowSince
+
+					if tick() - armorLowSince >= 0.18 then
+						tbl.isBuyingArmor = true
+						_G.MyActiveAction = "Buying Armor"
+						local cFrame = humanoidRootPart.CFrame
+
+						local ok = pcall(function()
+							if not tbl.value68 or not tbl.value68.Head or not tbl.value68.ClickDetector then
+								return
+							end
+							humanoidRootPart.CFrame = tbl.value68.Head.CFrame * CFrame.new(0, 3, 0)
+							task.wait(0.25)
+							fireclickdetector(tbl.value68.ClickDetector)
+							task.wait(0.35)
+						end)
+
+						if tbl.value69 and humanoidRootPart and cFrame then
+							pcall(function()
+								humanoidRootPart.CFrame = cFrame
+							end)
+						end
+
+						tbl.ArmorPurchaseCooldownUntil = tick() + 0.8
+						tbl.ArmorLowSince = 0
+						_G.MyActiveAction = "Idle"
+						tbl.isBuyingArmor = false
+
+						if not ok then
+							task.wait(0.15)
+						end
+					end
+				elseif not num or num >= 100 then
+					tbl.ArmorLowSince = 0
+				end
+
+				task.wait(0.1)
+			end
+
+			tbl.isBuyingArmor = false
+			tbl.ArmorLowSince = 0
+		end)
+	end
+end, false)
+
+v10:addSeparator()
+tbl.FireArmorOwned = false
+tbl.FireArmorKnown = false
+tbl.FireArmorMarkerSupported = false
+tbl.AntiFlameBusy = false
+tbl.FireArmorNextRetry = 0
+tbl.FireArmorState = "disabled"
+
+tbl.HasFireArmor = function()
+	local value107 = tbl.value107
+	local character = value107 and value107.Character
+	local backpack = value107 and value107:FindFirstChild("Backpack")
+	local bodyEffects = character and character:FindFirstChild("BodyEffects")
+	local tbl19 = {}
+	local fireArmor = character and character:FindFirstChild("[Fire Armor]")
+	character = character and character:FindFirstChild("Fire Armor")
+	local fireArmor2 = backpack and backpack:FindFirstChild("[Fire Armor]")
+	backpack = backpack and backpack:FindFirstChild("Fire Armor")
+	local fireArmor3 = bodyEffects and bodyEffects:FindFirstChild("FireArmor")
+	local fireArmor4 = bodyEffects and bodyEffects:FindFirstChild("Fire Armor")
+	local fireArmorSave = bodyEffects and bodyEffects:FindFirstChild("FireArmorSave")
+	bodyEffects = bodyEffects and bodyEffects:FindFirstChild("Fire Armor Save")
+	tbl19[1] = fireArmor
+	tbl19[2] = character
+	tbl19[3] = fireArmor2
+	tbl19[4] = backpack
+	tbl19[5] = fireArmor3
+	tbl19[6] = fireArmor4
+	tbl19[7] = fireArmorSave
+	tbl19[8] = bodyEffects
+
+	for _, v11 in ipairs(tbl19) do
+		if v11 then
+			tbl.FireArmorMarkerSupported = true
+
+			if v11:IsA("BoolValue") then
+				if v11.Value == true then
+					return true
+				end
+				continue
+			end
+
+			if v11:IsA("IntValue") or v11:IsA("NumberValue") then
+				if tonumber(v11.Value) and tonumber(v11.Value) > 0 then
+					return true
+				end
+				continue
+			end
+
+			return true
+		end
+	end
+
+	for _, v11 in ipairs({ "FireArmor", "Fire Armor", "HasFireArmor", "FireArmorOwned" }) do
+		local ok, result = pcall(function()
+			return value107:GetAttribute(v11)
+		end)
+
+		if ok and result ~= nil then
+			tbl.FireArmorMarkerSupported = true
+			if result == true then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+local function fn29()
+	local ignored = workspace:FindFirstChild("Ignored")
+	ignored = ignored and ignored:FindFirstChild("Shop")
+	if not ignored then
+		return nil, nil, nil
+	end
+	local fireArmor500 = ignored:FindFirstChild("[Fire Armor] - $500") or ignored:FindFirstChild("[Fire Armor]")
+
+	if fireArmor500 then
+		local clickDetector = fireArmor500:FindFirstChildWhichIsA("ClickDetector", true)
+		local head = fireArmor500:FindFirstChild("Head", true) or fireArmor500:FindFirstChildWhichIsA("BasePart", true)
+		if clickDetector and head then
+			return fireArmor500, clickDetector, head
+		end
+	end
+
+	for _, child in ipairs(ignored:GetChildren()) do
+		local str3 = child.Name:lower()
+
+		if str3:find("fire armor", 1, true) and not str3:find("high", 1, true) and not str3:find("medium", 1, true) then
+			local clickDetector = child:FindFirstChildWhichIsA("ClickDetector", true)
+			local head = child:FindFirstChild("Head", true) or child:FindFirstChildWhichIsA("BasePart", true)
+			if clickDetector and head then
+				return child, clickDetector, head
+			end
+		end
+	end
+
+	return nil, nil, nil
+end
+
+local function fn30()
+	if tbl.AntiFlameBusy or not getgenv().AntiFlame then
+		return false
+	end
+
+	if tbl.HasFireArmor() then
+		tbl.FireArmorOwned = true
+		tbl.FireArmorKnown = true
+		tbl.FireArmorState = "owned"
+		tbl.FireArmorNextRetry = 0
+		return true
+	end
+
+	tbl.AntiFlameBusy = true
+	tbl.FireArmorState = "buying"
+	local v11 = localPlayer
+	local character = v11.Character
+	local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+	local cFrame = humanoidRootPart and humanoidRootPart.CFrame
+	local n = os.clock() + 12
+	local flag = false
+
+	while true do
+		if getgenv().AntiFlame and os.clock() < n and not flag then
+			if tbl.HasFireArmor() then
+				flag = true
+				break
+			else
+				local character2 = v11.Character
+				humanoidRootPart = character2 and character2:FindFirstChild("HumanoidRootPart")
+
+				if humanoidRootPart then
+					local v12, v13, v14 = fn29()
+
+					if v13 and v14 and typeof(fireclickdetector) == "function" then
+						local ok = pcall(function()
+							humanoidRootPart.CFrame = v14.CFrame * CFrame.new(0, 3, 0)
+							task.wait(0.2)
+							fireclickdetector(v13)
+						end)
+
+						if cFrame then
+							pcall(function()
+								humanoidRootPart.CFrame = cFrame
+							end)
+						end
+
+						if ok then
+							local n2 = os.clock() + 2
+
+							while true do
+								if getgenv().AntiFlame and os.clock() < n2 then
+									if tbl.HasFireArmor() then
+										flag = true
+										break
+									else
+										task.wait(0.05)
+										continue
+									end
+								end
+
+								break
+							end
+						end
+					else
+						task.wait(0.4)
+					end
+
+					if not flag then
+						task.wait(0.25)
+					end
+
+					continue
+				end
+			end
+		end
+
+		break
+	end
+
+	if humanoidRootPart and cFrame then
+		pcall(function()
+			humanoidRootPart.CFrame = cFrame
+		end)
+	end
+
+	tbl.AntiFlameBusy = false
+
+	if flag then
+		tbl.FireArmorOwned = true
+		tbl.FireArmorKnown = true
+		tbl.FireArmorState = "owned"
+		tbl.FireArmorNextRetry = 0
+	else
+		tbl.FireArmorState = "retry"
+		tbl.FireArmorNextRetry = os.clock() + 2
+	end
+
+	return flag
+end
+
+v10:addToggle("Anti Flame (USE ONLY IF GETTING FLAMED)", function(antiFlame)
+	getgenv().AntiFlame = antiFlame
+
+	if tbl.AntiFlameConnection then
+		tbl.AntiFlameConnection:Disconnect()
+		tbl.AntiFlameConnection = nil
+	end
+
+	tbl.AntiFlameBusy = false
+	tbl.FireArmorNextRetry = 0
+
+	if not antiFlame then
+		tbl.FireArmorOwned = false
+		tbl.FireArmorKnown = false
+		tbl.FireArmorState = "disabled"
+		return
+	end
+
+	local v11 = tbl.HasFireArmor()
+	tbl.FireArmorKnown = true
+	tbl.FireArmorOwned = v11
+
+	if v11 then
+		tbl.FireArmorState = "owned"
+	else
+		tbl.FireArmorState = "initial"
+
+		task.spawn(function()
+			fn30()
+		end)
+	end
+
+	tbl.AntiFlameConnection = RunService.Heartbeat:Connect(function()
+		if not getgenv().AntiFlame or tbl.AntiFlameBusy then
+			return
+		end
+
+		if tbl.HasFireArmor() then
+			tbl.FireArmorOwned = true
+			tbl.FireArmorKnown = true
+			tbl.FireArmorState = "owned"
+			tbl.FireArmorNextRetry = 0
+			return
+		end
+
+		if tbl.FireArmorState == "owned" then
+			tbl.FireArmorOwned = false
+			tbl.FireArmorState = "lost"
+			tbl.FireArmorNextRetry = 0
+		elseif tbl.FireArmorState == "initial" then
+			return
+		end
+
+		local flag = tbl.FireArmorState == "lost" or tbl.FireArmorState == "retry"
+
+		if flag then
+			flag = os.clock() >= (tbl.FireArmorNextRetry or 0)
+		end
+
+		if flag then
+			task.spawn(function()
+				if fn30() == false and getgenv().AntiFlame then
+					tbl.FireArmorState = "retry"
+				end
+			end)
+		end
+	end)
+end, false)
+
+Utility:addButton("Rejoin", function()
+	TeleportService:Teleport(game.PlaceId, localPlayer)
+end)
+
+local TextChatService = game:GetService("TextChatService")
+local StarterGui = game:GetService("StarterGui")
+tbl.SpyChatEnabled = false
+tbl.SpyChatOriginalHeightScale = nil
+tbl.SpyChatOriginalWidthScale = nil
+tbl.SpyChatOriginalEnabled = nil
+tbl.SpyChatOriginalActive = nil
+
+local function fn31(arg)
+	for i = 1, 24 do
+		pcall(function()
+			StarterGui:SetCore("ChatActive", arg)
+		end)
+
+		task.wait(0.05)
+	end
+end
+
+local function fn32()
+	local chatWindowConfiguration = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+	if not chatWindowConfiguration then
+		return
+	end
+
+	if tbl.SpyChatOriginalHeightScale == nil then
+		tbl.SpyChatOriginalHeightScale = chatWindowConfiguration.HeightScale
+		tbl.SpyChatOriginalWidthScale = chatWindowConfiguration.WidthScale
+		tbl.SpyChatOriginalEnabled = chatWindowConfiguration.Enabled
+
+		local ok, result = pcall(function()
+			return StarterGui:GetCore("ChatActive")
+		end)
+
+		tbl.SpyChatOriginalActive = ok and result == true or false
+	end
+
+	tbl.SpyChatEnabled = true
+
+	pcall(function()
+		chatWindowConfiguration.Enabled = true
+	end)
+
+	pcall(function()
+		chatWindowConfiguration.HeightScale = 1
+	end)
+
+	pcall(function()
+		chatWindowConfiguration.WidthScale = 1
+	end)
+
+	task.spawn(function()
+		while tbl.SpyChatEnabled do
+			pcall(function()
+				if chatWindowConfiguration.Parent then
+					chatWindowConfiguration.Enabled = true
+					chatWindowConfiguration.HeightScale = 1
+					chatWindowConfiguration.WidthScale = 1
+				end
+			end)
+
+			pcall(function()
+				StarterGui:SetCore("ChatActive", true)
+			end)
+
+			task.wait(0.1)
+		end
+	end)
+end
+
+local function fn33()
+	tbl.SpyChatEnabled = false
+	local chatWindowConfiguration = TextChatService:FindFirstChildOfClass("ChatWindowConfiguration")
+
+	if chatWindowConfiguration then
+		if tbl.SpyChatOriginalEnabled ~= nil then
+			pcall(function()
+				chatWindowConfiguration.Enabled = tbl.SpyChatOriginalEnabled
+			end)
+		end
+
+		if tbl.SpyChatOriginalHeightScale ~= nil then
+			pcall(function()
+				chatWindowConfiguration.HeightScale = tbl.SpyChatOriginalHeightScale
+			end)
+		end
+
+		if tbl.SpyChatOriginalWidthScale ~= nil then
+			pcall(function()
+				chatWindowConfiguration.WidthScale = tbl.SpyChatOriginalWidthScale
+			end)
+		end
+	end
+
+	if tbl.SpyChatOriginalActive ~= nil then
+		task.spawn(function()
+			fn31(tbl.SpyChatOriginalActive)
+		end)
+	end
+
+	tbl.SpyChatOriginalHeightScale = nil
+	tbl.SpyChatOriginalWidthScale = nil
+	tbl.SpyChatOriginalEnabled = nil
+	tbl.SpyChatOriginalActive = nil
+end
+
+getgenv().YRWL_Connection___ = getgenv().YRWL_Connection___ or {}
+getgenv().SELFB0T_GodModeToken = (getgenv().SELFB0T_GodModeToken or 0) + 1
+tbl.value77 = nil
+tbl.value78 = nil
+tbl.value79 = false
+tbl.value80 = 0.2
+tbl.value81 = 17
+
+tbl.value13 = function()
+end
+
+tbl.GodModeReturnCFrame = nil
+tbl.GodModeVehicle = nil
+tbl.GodModeRunning = false
+tbl.GodModeFinishSequence = false
+tbl.GodModeToken = (tbl.GodModeToken or 0) + 1
+getgenv().YRWL_Connection___ = getgenv().YRWL_Connection___ or {}
+tbl.GodModeConnection = nil
+tbl.GodModeCharacterConnection = nil
+tbl.GodModeHealthConnection = nil
+tbl.GodModeForceField = nil
+tbl.GodModeMaxHealth = nil
+tbl.GodModeHealth = nil
+
+local function fn34()
+	if tbl.GodModeConnection then
+		pcall(function()
+			tbl.GodModeConnection:Disconnect()
+		end)
+
+		tbl.GodModeConnection = nil
+	end
+
+	if tbl.GodModeHealthConnection then
+		pcall(function()
+			tbl.GodModeHealthConnection:Disconnect()
+		end)
+
+		tbl.GodModeHealthConnection = nil
+	end
+
+	if tbl.GodModeCharacterConnection then
+		pcall(function()
+			tbl.GodModeCharacterConnection:Disconnect()
+		end)
+
+		tbl.GodModeCharacterConnection = nil
+	end
+
+	if tbl.GodModeForceField then
+		pcall(function()
+			tbl.GodModeForceField:Destroy()
+		end)
+
+		tbl.GodModeForceField = nil
+	end
+end
+
+local function fn35()
+	getgenv().SELFB0T_GodMode = false
+	fn34()
+	local character = localPlayer.Character
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+
+	if humanoid then
+		pcall(function()
+			if tbl.GodModeMaxHealth and tbl.GodModeHealth then
+				humanoid.MaxHealth = tbl.GodModeMaxHealth
+				humanoid.Health = math.min(tbl.GodModeHealth, humanoid.MaxHealth)
+			end
+
+			humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead, true)
+		end)
+	end
+
+	tbl.GodModeMaxHealth = nil
+	tbl.GodModeHealth = nil
+end
+
+guiToggleKey = guiToggleKey or Enum.KeyCode.Insert
+
+local Frame2 = fn12("Frame", {
+	Name = "UtilityToggleGUIRow",
+	Parent = Utility.Container,
+	BackgroundColor3 = Color3.fromRGB(24, 21, 14),
+	BorderSizePixel = 0,
+	Size = UDim2.new(1, -6, 0, 36),
+})
+
+local TextButton2 = fn12("TextButton", {
+	Parent = Frame2,
+	BackgroundTransparency = 1,
+	Position = UDim2.new(0, 0, 0, 0),
+	Size = UDim2.new(0.47, 0, 1, 0),
+	Text = "Toggle GUI",
+	TextColor3 = Color3.fromRGB(235, 235, 235),
+	Font = Enum.Font.Gotham,
+	TextSize = 12,
+	TextXAlignment = Enum.TextXAlignment.Left,
+	ZIndex = 3,
+})
+
+local TextButton3 = fn12("TextButton", {
+	Parent = Frame2,
+	BackgroundColor3 = Color3.fromRGB(32, 28, 20),
+	BorderSizePixel = 0,
+	Position = UDim2.new(0.5, 0, 0.5, -12),
+	Size = UDim2.new(0.5, -10, 0, 24),
+	Font = Enum.Font.Gotham,
+	Text = "[" .. guiToggleKey.Name .. "]",
+	TextColor3 = Color3.fromRGB(235, 185, 35),
+	TextSize = 10,
+	AutoButtonColor = false,
+})
+
+fn12("UIStroke", { Parent = TextButton3, Color = Color3.fromRGB(70, 60, 40), Thickness = 1 })
+local flag = false
+
+local function fn36()
+	if flag then
+		return
+	end
+	local screenGui = v3.ScreenGui
+	if not screenGui or not screenGui.Parent then
+		return
+	end
+	screenGui.Enabled = not screenGui.Enabled
+end
+
+TextButton2.MouseButton1Click:Connect(function()
+	fn36()
+end)
+
+TextButton3.MouseButton1Click:Connect(function()
+	flag = true
+	getgenv().SELFB0T_KeybindCapturing = true
+	TextButton3.Text = "[PRESS KEY]"
+end)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+	if flag and input.UserInputType == Enum.UserInputType.Keyboard then
+		if input.KeyCode == Enum.KeyCode.Escape or input.KeyCode == Enum.KeyCode.Backspace then
+			guiToggleKey = Enum.KeyCode.Insert
+		else
+			guiToggleKey = input.KeyCode
+		end
+
+		TextButton3.Text = "[" .. guiToggleKey.Name .. "]"
+		flag = false
+		getgenv().SELFB0T_KeybindCapturing = false
+		fn9()
+		return
+	end
+
+	if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == guiToggleKey and not flag and not getgenv().SELFB0T_KeybindCapturing then
+		fn36()
+		return
+	end
+
+	if gameProcessed or flag or getgenv().SELFB0T_KeybindCapturing then
+		return
+	end
+end)
+
+Utility:addToggle("God mode", false, function(selfb0tGodMode)
+	getgenv().SELFB0T_GodMode = selfb0tGodMode
+
+	if selfb0tGodMode then
+		tbl.GodModeRunning = true
+		tbl.GodModeFinishSequence = false
+		local character = localPlayer.Character
+		character = character and character:FindFirstChild("HumanoidRootPart")
+		tbl.GodModeReturnCFrame = character and character.CFrame or nil
+		tbl.value13("God Mode Enabled", 2)
+
+		task.spawn(function()
+			local Players2 = game:GetService("Players")
+			local Workspace_ = game:GetService("Workspace")
+			local VirtualInputManager2 = game:GetService("VirtualInputManager")
+			local localPlayer2 = Players2.LocalPlayer
+			local humanoidRootPart = (localPlayer2.Character or localPlayer2.CharacterAdded:Wait()):WaitForChild("HumanoidRootPart")
+			local vehicleSpawner = Workspace_:FindFirstChild("VehicleSpawner")
+
+			if vehicleSpawner then
+				local part = vehicleSpawner:FindFirstChild("Sign", true) and vehicleSpawner.Sign:FindFirstChild("Part", true)
+
+				if part then
+					humanoidRootPart.CFrame = part.CFrame + Vector3.new(0, 3, 0)
+				end
+			end
+
+			task.wait(0.3)
+
+			if vehicleSpawner then
+				local proximityPrompt = vehicleSpawner:FindFirstChild("Sign", true) and vehicleSpawner.Sign:FindFirstChild("Part", true) and vehicleSpawner.Sign.Part:FindFirstChild("ProximityPrompt")
+
+				if proximityPrompt then
+					fireproximityprompt(proximityPrompt)
+				end
+			end
+
+			task.wait(1)
+			local vehicles = Workspace_:FindFirstChild("Vehicles")
+			local v11 = nil
+
+			if vehicles then
+				local tbl19 = {}
+
+				for _, child in ipairs(vehicles:GetChildren()) do
+					tbl19[child] = true
+				end
+
+				local now = tick()
+
+				while true do
+					local flag2 = false
+
+					if tick() - now < 1 then
+						flag2 = getgenv().SELFB0T_GodMode
+					end
+
+					if not (not flag2 and not tbl.GodModeFinishSequence) then
+						for _, child in ipairs(vehicles:GetChildren()) do
+							if not tbl19[child] then
+								local ride = child:FindFirstChild("Ride")
+								if ride and ride:IsA("ProximityPrompt") then
+									v11 = child
+									break
+								end
+							end
+						end
+
+						if not v11 then
+							task.wait(0.1)
+							continue
+						end
+					end
+
+					break
+				end
+
+				if not v11 and getgenv().SELFB0T_GodMode then
+					local huge = math.huge
+
+					for _, child in ipairs(vehicles:GetChildren()) do
+						local ride = child:FindFirstChild("Ride")
+
+						if ride and ride:IsA("ProximityPrompt") then
+							local position = child:IsA("Model") and child:GetPivot().Position
+							local position2
+
+							if position then
+								position2 = position
+							else
+								position2 = child:IsA("BasePart") and child.Position
+							end
+
+							if position2 then
+								local magnitude = (position2 - humanoidRootPart.Position).Magnitude
+
+								if magnitude < huge then
+									v11 = child
+									huge = magnitude
+								end
+							end
+						end
+					end
+				end
+
+				if v11 and (getgenv().SELFB0T_GodMode or tbl.GodModeFinishSequence) then
+					local ride = v11:FindFirstChild("Ride")
+
+					if ride and ride:IsA("ProximityPrompt") then
+						if v11:IsA("BasePart") then
+							humanoidRootPart.CFrame = v11.CFrame + Vector3.new(0, 2, 0)
+						elseif v11:IsA("Model") then
+							local primaryPart = v11.PrimaryPart or v11:FindFirstChildWhichIsA("BasePart")
+
+							if primaryPart then
+								humanoidRootPart.CFrame = primaryPart.CFrame + Vector3.new(0, 2, 0)
+							end
+						end
+
+						task.wait(0.3)
+						fireproximityprompt(ride)
+					end
+				end
+			end
+
+			task.wait(0.5)
+
+			if v11 and (getgenv().SELFB0T_GodMode or tbl.GodModeFinishSequence) then
+				task.spawn(function()
+					for i = 1, 10 do
+						if v11 and v11.Parent and (getgenv().SELFB0T_GodMode or tbl.GodModeFinishSequence) then
+							if v11:IsA("Model") then
+								local primaryPart = v11.PrimaryPart or v11:FindFirstChildWhichIsA("BasePart")
+
+								if primaryPart then
+									local n = primaryPart.CFrame.LookVector * 1.5
+									v11:PivotTo(v11:GetPivot() + n)
+								end
+							elseif v11:IsA("BasePart") then
+								v11.CFrame = v11.CFrame + v11.CFrame.LookVector * 1.5
+							end
+						end
+
+						task.wait(0.05)
+					end
+				end)
+			end
+
+			local function fn37(arg)
+				if arg and arg.SeatPart then
+					local seatPart = arg.SeatPart
+					return seatPart.Parent ~= Workspace_ and seatPart.Parent or seatPart
+				end
+				return v11
+			end
+
+			task.wait(1.2)
+			if not getgenv().SELFB0T_GodMode and not tbl.GodModeFinishSequence then
+				tbl.GodModeRunning = false
+				return
+			end
+			local character2 = localPlayer2.Character or localPlayer2.CharacterAdded:Wait()
+			local humanoid = character2:WaitForChild("Humanoid")
+			local humanoidRootPart2 = character2:WaitForChild("HumanoidRootPart")
+			local v12 = fn37(humanoid)
+
+			local function fn38(cFrame)
+				local v13 = fn37(humanoid) or v12
+				if v13 and v13:IsA("Model") then
+					v13:PivotTo(cFrame)
+					return
+				end
+
+				if v13 and v13:IsA("BasePart") then
+					v13.CFrame = cFrame
+					return
+				end
+
+				if humanoidRootPart2 then
+					humanoidRootPart2.CFrame = cFrame
+				end
+			end
+
+			local position = humanoidRootPart2.Position
+
+			local v13, v14, v15 = ipairs({
+				Vector3.new(100000, 100000, 100000),
+				Vector3.new(200000, 200000, 200000),
+				Vector3.new(1500000, 1500000, 1500000),
+				Vector3.new(4000000, 4000000, 4000000),
+				Vector3.new(6500000, 6500000, 6500000),
+				Vector3.new(9000000, 9000000, 9000000),
+				Vector3.new(5000000, 5000000, 5000000),
+				Vector3.new(18000000, 18000000, 18000000),
+			})
+
+			while true do
+				local v16, v17 = v13(v14, v15)
+
+				if not (not v16 or not getgenv().SELFB0T_GodMode and not tbl.GodModeFinishSequence) then
+					local n = 0
+
+					while true do
+						n += 1
+
+						if not (n <= 25) then
+							break
+						else
+							fn38(CFrame.new(position:Lerp(v17, n / 25)))
+							task.wait(0.005)
+						end
+					end
+
+					v15 = v16
+					position = v17
+					continue
+				end
+
+				break
+			end
+
+			if getgenv().SELFB0T_GodMode or tbl.GodModeFinishSequence then
+				for i = 1, 15 do
+					fn38(CFrame.new(position:Lerp(Vector3.new(18812582000000, 1e29, 998235200000000), (i / 15) ^ 2)))
+					task.wait(0.03)
+				end
+
+				humanoid.Jump = true
+				VirtualInputManager2:SendKeyEvent(true, Enum.KeyCode.Space, false, game)
+				task.wait(0.05)
+				VirtualInputManager2:SendKeyEvent(false, Enum.KeyCode.Space, false, game)
+				task.wait(0.1)
+				fn38(CFrame.new(Vector3.new(18812582000000, 1e29, 998235200000000)))
+				task.wait(14)
+				local character3 = localPlayer2.Character or localPlayer2.CharacterAdded:Wait()
+				humanoidRootPart2 = character3:WaitForChild("HumanoidRootPart")
+				local v16 = fn37(character3:FindFirstChildOfClass("Humanoid")) or v12
+				humanoidRootPart2.Anchored = true
+				humanoidRootPart2.AssemblyLinearVelocity = Vector3.zero
+				humanoidRootPart2.AssemblyAngularVelocity = Vector3.zero
+				local godModeReturnCFrame = tbl.GodModeReturnCFrame
+
+				if not godModeReturnCFrame then
+					humanoidRootPart2.Anchored = false
+					tbl.GodModeFinishSequence = false
+					tbl.GodModeRunning = false
+					return
+				end
+
+				humanoidRootPart2.CFrame = godModeReturnCFrame
+
+				if v16 then
+					if v16:IsA("Model") then
+						for _, descendant in ipairs(v16:GetDescendants()) do
+							if descendant:IsA("BasePart") then
+								descendant.Anchored = true
+								descendant.AssemblyLinearVelocity = Vector3.zero
+								descendant.AssemblyAngularVelocity = Vector3.zero
+							end
+						end
+
+						v16:PivotTo(godModeReturnCFrame)
+					elseif v16:IsA("BasePart") then
+						v16.Anchored = true
+						v16.AssemblyLinearVelocity = Vector3.zero
+						v16.AssemblyAngularVelocity = Vector3.zero
+						v16.CFrame = godModeReturnCFrame
+					end
+				end
+
+				tbl.GodModeFinishSequence = false
+				tbl.GodModeReturnCFrame = nil
+				tbl.GodModeRunning = false
+				task.wait(0.15)
+				humanoidRootPart2.Anchored = false
+
+				if v16 then
+					if v16:IsA("Model") then
+						for _, descendant in ipairs(v16:GetDescendants()) do
+							if descendant:IsA("BasePart") then
+								descendant.Anchored = false
+							end
+						end
+					elseif v16:IsA("BasePart") then
+						v16.Anchored = false
+					end
+				end
+			end
+		end)
+
+		return
+	end
+
+	getgenv().SELFB0T_GodMode = false
+	tbl.GodModeFinishSequence = tbl.GodModeRunning == true
+
+	if not tbl.GodModeRunning then
+		local character = localPlayer.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+		if humanoid then
+			pcall(function()
+				humanoid.Sit = false
+				humanoid.PlatformStand = false
+				humanoid:ChangeState(Enum.HumanoidStateType.GettingUp)
+			end)
+		end
+
+		if humanoidRootPart then
+			pcall(function()
+				humanoidRootPart.Anchored = false
+				humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+				humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+				sethiddenproperty(humanoidRootPart, "PhysicsRepRootPart", nil)
+			end)
+
+			if tbl.GodModeReturnCFrame then
+				humanoidRootPart.CFrame = tbl.GodModeReturnCFrame
+			end
+		end
+
+		tbl.GodModeFinishSequence = false
+		tbl.GodModeReturnCFrame = nil
+	end
+
+	tbl.value13("God Mode Disabled", 1.5)
+end)
+
+Utility:addToggle("God Block", false, function(xzqwGodBlock)
+	if xzqwGodBlock and _G.KillMethod == "Flame" then
+		xzqwGodBlock = false
+	end
+
+	getgenv().XZQW_GodBlock = xzqwGodBlock
+
+	if tbl.GodBlockConnection then
+		pcall(function()
+			tbl.GodBlockConnection:Disconnect()
+		end)
+
+		tbl.GodBlockConnection = nil
+	end
+
+	if not xzqwGodBlock then
+		pcall(function()
+			local mainEvent = ReplicatedStorage:FindFirstChild("MainEvent")
+
+			if mainEvent then
+				mainEvent:FireServer("Block", false)
+			end
+		end)
+
+		tbl.value13("God Block Disabled", 1.5)
+		return
+	end
+
+	tbl.value13("God Block Enabled", 2)
+	tbl.GodBlockNextF = 0
+
+	tbl.GodBlockConnection = RunService.Stepped:Connect(function()
+		if not getgenv().XZQW_GodBlock then
+			return
+		end
+		local now = os.clock()
+
+		if (tbl.GodBlockNextF or 0) <= now then
+			tbl.GodBlockNextF = now + 0.018
+
+			pcall(function()
+				VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.F, false, game)
+				VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.F, false, game)
+			end)
+		end
+
+		local character = localPlayer.Character
+		if _G.KillMethod == "Flame" then
+			getgenv().XZQW_GodBlock = false
+			return
+		end
+		character = character and character:FindFirstChild("BodyEffects")
+		local mainEvent = ReplicatedStorage:FindFirstChild("MainEvent")
+		if not character or not mainEvent then
+			return
+		end
+		local block = character:FindFirstChild("Block")
+
+		if block then
+			pcall(function()
+				block:Destroy()
+			end)
+		end
+
+		pcall(function()
+			mainEvent:FireServer("Block", true)
+		end)
+	end)
+end, false)
+
+Utility:addToggle("Cash Aura", false, function(value79)
+	tbl.value79 = value79
+
+	if tbl.value79 then
+		tbl.value13("Cash Aura Enabled", 2)
+
+		local function fn37()
+			local tbl19 = {}
+			local drop = workspace:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Drop")
+
+			if drop then
+				for _, child in pairs(drop:GetChildren()) do
+					if child.Name == "MoneyDrop" then
+						local attribute = child:GetAttribute("OriginalPos") or child.Position
+						local humanoidRootPart = game:GetService("Players").LocalPlayer.Character and game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart")
+
+						if humanoidRootPart and (attribute - humanoidRootPart.Position).Magnitude <= tbl.value81 then
+							table.insert(tbl19, child)
+						end
+					end
+				end
+			end
+
+			return tbl19
+		end
+
+		task.spawn(function()
+			while tbl.value79 do
+				local v11 = fn37()
+
+				for _, v12 in pairs(v11) do
+					local clickDetector = v12:FindFirstChildOfClass("ClickDetector")
+
+					if clickDetector then
+						fireclickdetector(clickDetector)
+					end
+				end
+
+				task.wait(tbl.value80)
+			end
+		end)
+
+		return
+	end
+
+	tbl.value13("Cash Aura Disabled", 1.5)
+end)
+
+Utility:addToggle("Anti Stomp", false, function(arg)
+	if arg then
+		tbl.value13("Anti Stomp Active", 2)
+
+		local function fn37()
+			local localPlayer2 = game:GetService("Players").LocalPlayer
+			localPlayer2 = localPlayer2 and localPlayer2.Character
+			local humanoid = localPlayer2 and localPlayer2:FindFirstChildOfClass("Humanoid")
+
+			if humanoid and humanoid.Health <= 15 then
+				for _, v11 in ipairs({
+					"Head",
+					"RightHand",
+					"LeftHand",
+					"LowerTorso",
+					"UpperTorso",
+					"LeftLowerLeg",
+					"RightLowerLeg",
+					"RightFoot",
+					"LeftFoot",
+					"LeftUpperLeg",
+					"RightUpperLeg",
+					"RightUpperArm",
+					"RightLowerArm",
+					"LeftLowerArm",
+					"LeftUpperArm",
+				}) do
+					local v12 = localPlayer2:FindFirstChild(v11)
+
+					if v12 then
+						v12:Destroy()
+					end
+				end
+			end
+		end
+
+		fn37()
+		game:GetService("RunService"):BindToRenderStep("Anti-Stomp", Enum.RenderPriority.Camera.Value + 1, fn37)
+		return
+	end
+
+	tbl.value13("Anti Stomp Disabled", 1.5)
+	game:GetService("RunService"):UnbindFromRenderStep("Anti-Stomp")
+end)
+
+Utility:addToggle("Spy Chat", function(arg)
+	if arg then
+		fn32()
+	else
+		fn33()
+	end
+end, false)
+
+tbl.VoidHideEnabled = false
+tbl.VoidHideConnection = nil
+tbl.VoidHideReturnCFrame = nil
+tbl.VoidHidePhase = 0
+tbl.VoidHideGodModeWasEnabled = nil
+tbl.VoidHideGodModeApplied = false
+
+local function fn37(arg)
+	if tbl.VoidHideGodModeApplied then
+		pcall(function()
+			fn35()
+		end)
+	end
+
+	tbl.VoidHideGodModeApplied = false
+	tbl.VoidHideGodModeWasEnabled = nil
+	tbl.VoidHideEnabled = false
+
+	if tbl.VoidHideConnection then
+		pcall(function()
+			tbl.VoidHideConnection:Disconnect()
+		end)
+
+		tbl.VoidHideConnection = nil
+	end
+
+	if arg and tbl.VoidHideReturnCFrame then
+		local character = localPlayer.Character
+		local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+
+		if humanoidRootPart then
+			pcall(function()
+				humanoidRootPart.CFrame = tbl.VoidHideReturnCFrame
+				humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+				humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+			end)
+		end
+	end
+
+	tbl.VoidHideReturnCFrame = nil
+	tbl.VoidHidePhase = 0
+end
+
+Utility:addToggle("Void Hide", false, function(arg)
+	if not arg then
+		fn37(true)
+		return
+	end
+	fn37(false)
+	local character = localPlayer.Character
+	character = character and character:FindFirstChild("HumanoidRootPart")
+	if not character then
+		return
+	end
+	tbl.VoidHideGodModeWasEnabled = getgenv().SELFB0T_GodMode == true
+	tbl.VoidHideGodModeApplied = false
+	tbl.VoidHideEnabled = true
+	tbl.VoidHideReturnCFrame = character.CFrame
+	tbl.VoidHidePhase = 0
+
+	tbl.VoidHideConnection = RunService.Heartbeat:Connect(function(deltaTime)
+		if not tbl.VoidHideEnabled then
+			return
+		end
+		local character2 = localPlayer.Character
+		local humanoidRootPart = character2 and character2:FindFirstChild("HumanoidRootPart")
+		if not humanoidRootPart then
+			return
+		end
+		tbl.VoidHidePhase = tbl.VoidHidePhase + deltaTime * 55
+		local voidHidePhase = tbl.VoidHidePhase
+		local n = Vector3.new(0, 300000, 0) + Vector3.new(math.cos(voidHidePhase) * 1200, math.sin(voidHidePhase * 2.5) * 450, math.sin(voidHidePhase) * 1200)
+		local vector = Vector3.new(-math.sin(voidHidePhase) * 100, math.cos(voidHidePhase * 2.5) * 30, math.cos(voidHidePhase) * 100)
+
+		pcall(function()
+			humanoidRootPart.CFrame = CFrame.lookAt(n, n + vector)
+			humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+			humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+		end)
+	end)
+end, false)
+
+Utility:addToggle("Noclip", false, function(noclipEnabled)
+	tbl.NoclipEnabled = noclipEnabled
+
+	if tbl.value77 then
+		tbl.value77:Disconnect()
+		tbl.value77 = nil
+	end
+
+	local character = localPlayer.Character
+
+	local function applyNoclipCollision(arg)
+		if not arg then
+			return
+		end
+		arg:FindFirstChild("HumanoidRootPart")
+
+		for _, descendant in ipairs(arg:GetDescendants()) do
+			if descendant:IsA("BasePart") then
+				descendant.CanCollide = false
+			end
+		end
+	end
+
+	tbl.ApplyNoclipCollision = applyNoclipCollision
+
+	if noclipEnabled then
+		tbl.value13("Noclip Enabled", 2)
+		applyNoclipCollision(character)
+
+		tbl.value77 = localPlayer.CharacterAdded:Connect(function(character2)
+			if not tbl.NoclipEnabled then
+				return
+			end
+			character2:WaitForChild("HumanoidRootPart", 3)
+			applyNoclipCollision(character2)
+		end)
+
+		return
+	end
+
+	tbl.value13("Noclip Disabled", 1.5)
+
+	if tbl.ApplyNoclipCollision then
+		tbl.NoclipEnabled = false
+
+		if character then
+			for _, descendant in ipairs(character:GetDescendants()) do
+				if descendant:IsA("BasePart") then
+					descendant.CanCollide = true
+				end
+			end
+		end
+	end
+end)
+
+local v11 = Utility:addGroup()
+tbl.value82 = false
+tbl.value83 = { ["[Flintlock]"] = 0, ["[Rifle]"] = 1 }
+
+v11:addToggle("Auto Reload", false, function(value82)
+	tbl.value82 = value82
+
+	if tbl.AutoReloadConnection then
+		tbl.AutoReloadConnection:Disconnect()
+		tbl.AutoReloadConnection = nil
+	end
+
+	tbl.AutoReloadCooldowns = {}
+	if not value82 then
+		tbl.value13("Auto Reload Disabled", 1.5)
+		return
+	end
+	tbl.value13("Auto Reload Active", 2)
+
+	tbl.AutoReloadConnection = RunService.Heartbeat:Connect(function()
+		if not tbl.value82 then
+			return
+		end
+		local character = localPlayer.Character
+		local mainEvent = ReplicatedStorage:FindFirstChild("MainEvent")
+		if not character or not mainEvent then
+			return
+		end
+		local now = os.clock()
+
+		for _, child in ipairs(character:GetChildren()) do
+			if child:IsA("Tool") then
+				local ammo = child:FindFirstChild("Ammo")
+				local num = ammo and tonumber(ammo.Value)
+
+				if ammo and num and num <= 1 then
+					if now - (tbl.AutoReloadCooldowns[child] or 0) >= 0.1 then
+						tbl.AutoReloadCooldowns[child] = now
+
+						pcall(function()
+							mainEvent:FireServer("Reload", child)
+						end)
+					end
+				end
+			end
+		end
+	end)
+end)
+
+tbl.TrashTalkEnabled = false
+tbl.TrashTalkTask = nil
+tbl.TrashTalkIndex = 0
+
+tbl.TrashTalkMessages = {
+	"Yolk owns!",
+	"you are funny!",
+	"Yolk won again!",
+	"Free scr!pt btw!",
+	"Getting owned by Yolk!",
+	"Really easy!",
+	"haha!",
+	"Respect for still trying",
+	"Made by michiamodenis btw!",
+	"Yolk is free btw",
+	"Best stand here!, Yolk!",
+}
+
+local function fn38(arg)
+	local flag2 = false
+
+	pcall(function()
+		local textChannels = game:GetService("TextChatService"):FindFirstChild("TextChannels")
+		textChannels = textChannels and textChannels:FindFirstChild("RBXGeneral")
+
+		if textChannels then
+			textChannels:SendAsync(arg)
+			flag2 = true
+		end
+	end)
+
+	if not flag2 then
+		pcall(function()
+			local defaultChatSystemChatEvents = ReplicatedStorage:FindFirstChild("DefaultChatSystemChatEvents")
+			defaultChatSystemChatEvents = defaultChatSystemChatEvents and defaultChatSystemChatEvents:FindFirstChild("SayMessageRequest")
+
+			if defaultChatSystemChatEvents then
+				defaultChatSystemChatEvents:FireServer(arg, "All")
+			end
+		end)
+	end
+end
+
+v11:addToggle("Trash Talk", function(trashTalkEnabled)
+	tbl.TrashTalkEnabled = trashTalkEnabled
+
+	if tbl.TrashTalkTask then
+		task.cancel(tbl.TrashTalkTask)
+		tbl.TrashTalkTask = nil
+	end
+
+	if not trashTalkEnabled then
+		tbl.value13("Trash Talk Disabled", 1.5)
+		return
+	end
+	tbl.value13("Trash Talk Enabled", 2)
+	tbl.TrashTalkIndex = 0
+
+	tbl.TrashTalkTask = task.spawn(function()
+		while tbl.TrashTalkEnabled do
+			tbl.TrashTalkIndex = tbl.TrashTalkIndex % #tbl.TrashTalkMessages + 1
+			fn38(tbl.TrashTalkMessages[tbl.TrashTalkIndex])
+			task.wait(3)
+		end
+	end)
+end, false)
+
+tbl.AntiBagEnabled = false
+tbl.AntiBagConnection = nil
+tbl.AntiBagResetting = false
+tbl.AntiBagReturnCFrame = nil
+
+v11:addToggle("Anti Bag", function(antiBagEnabled)
+	tbl.AntiBagEnabled = antiBagEnabled
+	tbl.AntiBagResetting = false
+
+	if tbl.AntiBagConnection then
+		tbl.AntiBagConnection:Disconnect()
+		tbl.AntiBagConnection = nil
+	end
+
+	if not antiBagEnabled then
+		tbl.AntiBagReturnCFrame = nil
+		tbl.value13("Anti Bag Disabled", 1.5)
+		return
+	end
+
+	tbl.value13("Anti Bag Enabled", 2)
+
+	tbl.AntiBagConnection = RunService.Heartbeat:Connect(function()
+		if not tbl.AntiBagEnabled or tbl.AntiBagResetting then
+			return
+		end
+
+		if tbl.RagebotEnabled and getgenv().BagBeforeKill then
+			return
+		end
+		local character = localPlayer.Character
+		local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		if not character or not humanoidRootPart or not humanoid or humanoid.Health <= 0 then
+			return
+		end
+
+		if not (character:FindFirstChild("GRABBING_CONSTRAINT") ~= nil or character:FindFirstChild("Christmas_Sock") ~= nil) then
+			return
+		end
+		tbl.AntiBagResetting = true
+		tbl.AntiBagReturnCFrame = humanoidRootPart.CFrame
+
+		pcall(function()
+			humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+			humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+			humanoid.Health = 0
+		end)
+	end)
+end, false)
+
+localPlayer.CharacterAdded:Connect(function(character)
+	if not tbl.AntiBagEnabled then
+		return
+	end
+
+	task.spawn(function()
+		local humanoidRootPart = character:WaitForChild("HumanoidRootPart", 8)
+		local humanoid = character:FindFirstChildOfClass("Humanoid") or character:WaitForChild("Humanoid", 8)
+		if not humanoidRootPart or not humanoid then
+			tbl.AntiBagResetting = false
+			return
+		end
+		local antiBagReturnCFrame = tbl.AntiBagReturnCFrame
+
+		if tbl.AntiBagEnabled and antiBagReturnCFrame then
+			for i = 1, 3 do
+				if not (not tbl.AntiBagEnabled or not humanoidRootPart.Parent) then
+					pcall(function()
+						humanoidRootPart.Anchored = false
+						humanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+						humanoidRootPart.AssemblyAngularVelocity = Vector3.zero
+						humanoidRootPart.CFrame = antiBagReturnCFrame
+					end)
+
+					task.wait(0.05)
+					continue
+				end
+
+				break
+			end
+		end
+
+		if not character:FindFirstChild("GRABBING_CONSTRAINT") and not character:FindFirstChild("Christmas_Sock") then
+			tbl.AntiBagReturnCFrame = nil
+		end
+
+		tbl.AntiBagResetting = false
+	end)
+end)
+
+tbl.SentryEnabled = false
+tbl.SentryConnection = nil
+tbl.SentryDamagerConnection = nil
+tbl.SentryHealth = 0
+tbl.SentryReturnCFrame = nil
+tbl.SentryLastAttack = 0
+
+tbl.SentryFindPlayer = function(arg)
+	if typeof(arg) == "Instance" then
+		if arg:IsA("Player") then
+			return arg
+		end
+
+		if arg:IsA("Model") then
+			return Players:GetPlayerFromCharacter(arg)
+		end
+	elseif type(arg) == "string" then
+		return Players:FindFirstChild(arg)
+	end
+
+	return nil
+end
+
+tbl.SentryFindAttacker = function(arg)
+	local bodyEffects = arg and arg:FindFirstChild("BodyEffects")
+	local tbl19 = {}
+	local lastDamager = arg and arg:FindFirstChild("LastDamager", true) or nil
+	local lastAttacker = arg and arg:FindFirstChild("LastAttacker", true) or nil
+	local attacker = arg and arg:FindFirstChild("Attacker", true) or nil
+	local creator = arg and arg:FindFirstChild("creator", true) or nil
+	arg = arg and arg:FindFirstChild("Creator", true) or nil
+	local lastDamager2 = bodyEffects and bodyEffects:FindFirstChild("LastDamager", true) or nil
+	local lastAttacker2 = bodyEffects and bodyEffects:FindFirstChild("LastAttacker", true) or nil
+	local attacker2 = bodyEffects and bodyEffects:FindFirstChild("Attacker", true) or nil
+	local creator2 = bodyEffects and bodyEffects:FindFirstChild("creator", true) or nil
+	local creator3 = bodyEffects and bodyEffects:FindFirstChild("Creator", true) or nil
+	tbl19[1] = lastDamager
+	tbl19[2] = lastAttacker
+	tbl19[3] = attacker
+	tbl19[4] = creator
+	tbl19[5] = arg
+	tbl19[6] = lastDamager2
+	tbl19[7] = lastAttacker2
+	tbl19[8] = attacker2
+	tbl19[9] = creator2
+	tbl19[10] = creator3
+
+	for _, v12 in ipairs(tbl19) do
+		if v12 then
+			local value = v12.Value
+
+			if typeof(value) == "Instance" then
+				if not value:IsA("Player") then
+					if value:IsA("Model") then
+						value = Players:GetPlayerFromCharacter(value)
+					else
+						local value2 = value:IsA("ObjectValue") and value.Value
+						local v13 = nil
+
+						if value2 then
+							value = value.Value
+
+							if not value:IsA("Player") then
+								local v14 = nil
+
+								if value:IsA("Model") then
+									value = Players:GetPlayerFromCharacter(value)
+								else
+									value = v14
+								end
+							end
+						else
+							value = v13
+						end
+					end
+				end
+			else
+				local v13 = nil
+
+				if type(value) ~= "string" then
+					value = v13
+				else
+					local v14 = Players:FindFirstChild(value)
+
+					if not v14 then
+						local str3 = value:lower()
+						local exitTo = nil
+
+						for i in ipairs(Players:GetPlayers()) do
+							if value.Name:lower() == str3 then
+								exitTo = 1
+								break
+							end
+						end
+
+						if exitTo ~= 1 then
+							value = v14
+						end
+					else
+						value = v14
+					end
+				end
+			end
+
+			if value and value ~= localPlayer and value.Parent == Players then
+				return value
+			end
+		end
+	end
+
+	return nil
+end
+
+tbl.SentryFindMelee = function()
+	local character = localPlayer.Character
+	local backpack = localPlayer:FindFirstChild("Backpack")
+	if (_G.SelectedMelee or "[Punch]") == "[Knife]" then
+		character = character and character:FindFirstChild("[Knife]") or backpack and backpack:FindFirstChild("[Knife]")
+		return character
+	end
+	return character and character:FindFirstChild("Combat") or backpack and backpack:FindFirstChild("Combat")
+end
+
+tbl.SentryAttack = function(arg, arg2)
+	if not arg or arg == localPlayer or arg.Parent ~= Players then
+		return
+	end
+	local character = arg.Character
+	local humanoidRootPart = character and character:FindFirstChild("HumanoidRootPart")
+	local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+	local character2 = localPlayer.Character
+	local humanoidRootPart2 = character2 and character2:FindFirstChild("HumanoidRootPart")
+	local humanoid2 = character2 and character2:FindFirstChildOfClass("Humanoid")
+	if not humanoid2 or not humanoidRootPart or not humanoid or humanoid.Health <= 0 or not humanoidRootPart2 or not humanoid2 then
+		return
+	end
+	local v12 = tbl.SentryFindMelee()
+	if not v12 then
+		return
+	end
+	local cFrame = arg2 or humanoidRootPart2.CFrame
+	local now = os.clock()
+
+	if v12.Parent ~= character2 then
+		pcall(function()
+			humanoid2:EquipTool(v12)
+		end)
+
+		task.wait(0.05)
+	end
+
+	if v12.Parent ~= character2 then
+		return
+	end
+	local exitTo = nil
+
+	while true do
+		if tbl.SentryEnabled and arg.Parent == Players and os.clock() - now < 2.5 then
+			local character3 = arg.Character
+			local humanoidRootPart3 = character3 and character3:FindFirstChild("HumanoidRootPart")
+			local humanoid3 = character3 and character3:FindFirstChildOfClass("Humanoid")
+
+			if not humanoidRootPart3 or not humanoid3 or humanoid3.Health <= 0 then
+				exitTo = 1
+				break
+			else
+				humanoidRootPart2 = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") or humanoidRootPart2
+
+				if not humanoidRootPart2 then
+					exitTo = 2
+					break
+				else
+					humanoidRootPart2.CFrame = humanoidRootPart3.CFrame * CFrame.new(0, 0, 2.5)
+
+					pcall(function()
+						v12:Activate()
+					end)
+
+					task.wait(0.04)
+					local bodyEffects = character3:FindFirstChild("BodyEffects")
+					local ko
+
+					if bodyEffects then
+						ko = bodyEffects:FindFirstChild("K.O") or bodyEffects:FindFirstChild("KO") or bodyEffects:FindFirstChild("KnockedOut")
+					else
+						ko = bodyEffects
+					end
+
+					local value = ko and ko.Value
+					ko = ko and (typeof(value) == "boolean" and value or typeof(value) == "number" and value > 0)
+
+					if ko then
+						exitTo = 3
+						break
+					else
+						continue
+					end
+				end
+			end
+		end
+
+		break
+	end
+
+	local character3, humanoidRootPart3
+
+	if exitTo == 1 then
+		character3 = localPlayer.Character
+		humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+	elseif exitTo == 2 then
+		character3 = localPlayer.Character
+		humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+	elseif exitTo == 3 then
+		local mainEvent = ReplicatedStorage:FindFirstChild("MainEvent")
+
+		if mainEvent then
+			local exitTo2 = nil
+
+			for i = 1, 4 do
+				if not tbl.SentryEnabled then
+					exitTo2 = 1
+					break
+				else
+					local character4 = arg.Character
+					local humanoidRootPart4 = character4 and character4:FindFirstChild("HumanoidRootPart")
+					character4 = character4 and character4:FindFirstChildOfClass("Humanoid")
+
+					if not humanoidRootPart4 or not character4 or character4.Health <= 0 then
+						exitTo2 = 2
+						break
+					else
+						humanoidRootPart2 = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart") or humanoidRootPart2
+
+						if not humanoidRootPart2 then
+							exitTo2 = 3
+							break
+						else
+							humanoidRootPart2.CFrame = CFrame.new(humanoidRootPart4.Position + Vector3.new(0, 3, 0))
+
+							pcall(function()
+								mainEvent:FireServer("Stomp")
+							end)
+
+							task.wait(0.07)
+						end
+					end
+				end
+			end
+
+			if exitTo2 == 1 then
+				character3 = localPlayer.Character
+				humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+			elseif exitTo2 == 2 then
+				character3 = localPlayer.Character
+				humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+			elseif exitTo2 == 3 then
+				character3 = localPlayer.Character
+				humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+			else
+				character3 = localPlayer.Character
+				humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+			end
+		else
+			character3 = localPlayer.Character
+			humanoidRootPart3 = character3 and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+		end
+	else
+		humanoidRootPart3 = localPlayer.Character and localPlayer.Character:FindFirstChild("HumanoidRootPart")
+	end
+
+	if humanoidRootPart3 and cFrame then
+		pcall(function()
+			humanoidRootPart3.CFrame = cFrame
+			humanoidRootPart3.AssemblyLinearVelocity = Vector3.zero
+			humanoidRootPart3.AssemblyAngularVelocity = Vector3.zero
+		end)
+	end
+end
+
+local function fn39(arg)
+	if tbl.SentryConnection then
+		tbl.SentryConnection:Disconnect()
+		tbl.SentryConnection = nil
+	end
+
+	if tbl.SentryDamagerConnection then
+		tbl.SentryDamagerConnection:Disconnect()
+		tbl.SentryDamagerConnection = nil
+	end
+
+	local humanoid = arg and arg:FindFirstChildOfClass("Humanoid")
+	if not humanoid then
+		return
+	end
+	tbl.SentryHealth = humanoid.Health
+
+	tbl.SentryDamagerConnection = humanoid.HealthChanged:Connect(function(health)
+		local sentryHealth = tbl.SentryHealth
+		tbl.SentryHealth = health
+		if not tbl.SentryEnabled then
+			return
+		end
+
+		if health >= sentryHealth then
+			return
+		end
+		local humanoidRootPart = arg:FindFirstChild("HumanoidRootPart")
+		tbl.SentryReturnCFrame = humanoidRootPart and humanoidRootPart.CFrame or tbl.SentryReturnCFrame
+		local v12 = tbl.SentryFindAttacker(arg)
+
+		if v12 and v12 ~= localPlayer and v12.Parent == Players and v12.Character then
+			task.spawn(function()
+				if tbl.SentryEnabled then
+					tbl.SentryAttack(v12, tbl.SentryReturnCFrame)
+				end
+			end)
+		end
+	end)
+
+	tbl.SentryConnection = arg.AncestryChanged:Connect(function(child, parent)
+		if not parent then
+			if tbl.SentryConnection then
+				tbl.SentryConnection:Disconnect()
+				tbl.SentryConnection = nil
+			end
+
+			if tbl.SentryDamagerConnection then
+				tbl.SentryDamagerConnection:Disconnect()
+				tbl.SentryDamagerConnection = nil
+			end
+		end
+	end)
+end
+
+v11:addToggle("Strict Sentry", function(sentryEnabled)
+	tbl.SentryEnabled = sentryEnabled
+
+	if tbl.SentryConnection then
+		tbl.SentryConnection:Disconnect()
+		tbl.SentryConnection = nil
+	end
+
+	if tbl.SentryDamagerConnection then
+		tbl.SentryDamagerConnection:Disconnect()
+		tbl.SentryDamagerConnection = nil
+	end
+
+	if sentryEnabled and localPlayer.Character then
+		fn39(localPlayer.Character)
+	end
+end, false)
+
+localPlayer.CharacterAdded:Connect(function(character)
+	task.spawn(function()
+		character:WaitForChild("Humanoid", 5)
+		character:WaitForChild("HumanoidRootPart", 5)
+
+		if tbl.SentryEnabled then
+			fn39(character)
+		end
+	end)
+end)
+
+tbl.RagebotFindPunch = function()
+	local value107 = tbl.value107
+	local character = value107 and value107.Character
+	value107 = value107 and value107:FindFirstChild("Backpack")
+	character = character and character:FindFirstChild("Combat")
+	if character and character:IsA("Tool") then
+		return character
+	end
+	value107 = value107 and value107:FindFirstChild("Combat")
+	if value107 and value107:IsA("Tool") then
+		return value107
+	end
+	return nil
+end
+
+tbl.RagebotFindGreenPad = function()
+	local tbl19 = {}
+	local greenPad = workspace:FindFirstChild("GreenPad", true)
+	local greenPad2 = workspace:FindFirstChild("Green Pad", true)
+	local greenpad = workspace:FindFirstChild("greenpad", true)
+	local v12 = workspace
+	local findFirstChild = v12.FindFirstChild
+	tbl19[1] = greenPad
+	tbl19[2] = greenPad2
+	tbl19[3] = greenpad
+
+	do
+		local values = table.pack(findFirstChild(v12, "green pad", true))
+		table.move(values, 1, values.n, 4, tbl19)
+	end
+
+	for _, v13 in ipairs(tbl19) do
+		if v13 and v13:IsA("BasePart") then
+			return v13
+		end
+
+		if v13 and v13:IsA("Model") then
+			local primaryPart = v13.PrimaryPart or v13:FindFirstChildWhichIsA("BasePart", true)
+			if primaryPart then
+				return primaryPart
+			end
+		end
+	end
+
+	return nil
+end
+
+tbl.RagebotGetBuyRestCFrame = function()
+	local v12 = tbl.RagebotFindGreenPad()
+	if v12 then
+		return v12.CFrame * CFrame.new(0, -(v12.Size.Y / 2 + 3), 0)
+	end
+	return tbl.SafeVoid
+end
+
+tbl.RagebotShopNames = {
+	["[Knife]"] = "[Knife] - $169",
+	["[Pitchfork]"] = "[Pitchfork]",
+	Rifle = "[Rifle]",
+	["[Rifle]"] = "[Rifle]",
+	["Rifle Ammo"] = "5 [Rifle Ammo] - $281",
+	Flamethrower = "[Flamethrower]",
+	["[Flamethrower]"] = "[Flamethrower]",
+	["Flamethrower Ammo"] = "[Flamethrower Ammo] - $1000",
+}
+
+tbl.RagebotFindShopItem = function(arg, arg2)
+	local shop = workspace:FindFirstChild("Ignored") and workspace.Ignored:FindFirstChild("Shop")
+	if not shop then
+		return nil, nil
+	end
+	local tbl19 = {}
+
+	if arg2 then
+		if arg == "Rifle" or arg == "[Rifle]" then
+			tbl19 = { "5 [Rifle Ammo] - $281", "[Rifle Ammo] - $281" }
+		elseif arg == "Flamethrower" or arg == "[Flamethrower]" then
+			tbl19 = { "[Flamethrower Ammo] - $1000" }
+		else
+			tbl19 = { arg .. " Ammo]", arg .. " Ammo" }
+		end
+	else
+		tbl19 = { tbl.RagebotShopNames[arg] or arg, "[" .. arg .. "]" }
+	end
+
+	for _, name in ipairs(tbl19) do
+		local item = shop:FindFirstChild(name)
+		if item then
+			local clickDetector = item:FindFirstChildOfClass("ClickDetector") or item:FindFirstChildWhichIsA("ClickDetector", true)
+			local head = item:FindFirstChild("Head") or item:FindFirstChildWhichIsA("BasePart", true)
+			if clickDetector and head then
+				return item, clickDetector, head
+			end
+		end
+	end
+
+	for _, child in ipairs(shop:GetChildren()) do
+		if string.find(child.Name:lower(), tostring(arg):lower()) then
+			local clickDetector = child:FindFirstChildOfClass("ClickDetector") or child:FindFirstChildWhichIsA("ClickDetector", true)
+			local head = child:FindFirstChild("Head") or child:FindFirstChildWhichIsA("BasePart", true)
+			if clickDetector and head then
+				return child, clickDetector, head
+			end
+		end
+	end
+
+	return nil, nil
+end
