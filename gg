@@ -72,18 +72,22 @@ for _, player in pairs(Players:GetPlayers()) do
 	fn20(player)
 end
 
+-- Fixed code snippet for the initialization section
 Players.PlayerAdded:Connect(fn20)
 workspace.FallenPartsDestroyHeight = (0/0)
+
+-- Ensure tbl is defined as an empty table if it doesn't exist yet to prevent index nil errors
+tbl = tbl or {}
 tbl.value30 = workspace:FindFirstChild("Desync Setback")
 
 if not tbl.value30 then
-	tbl.value30 = Instance.new("Part")
-	tbl.value30.Name = "Desync Setback"
-	tbl.value30.Size = Vector3.new(2, 2, 1)
-	tbl.value30.CanCollide = false
-	tbl.value30.Anchored = true
-	tbl.value30.Transparency = 1
-	tbl.value30.Parent = workspace
+    tbl.value30 = Instance.new("Part")
+    tbl.value30.Name = "Desync Setback"
+    tbl.value30.Size = Vector3.new(2, 2, 1)
+    tbl.value30.CanCollide = false
+    tbl.value30.Anchored = true
+    tbl.value30.Transparency = 1
+    tbl.value30.Parent = workspace
 end
 
 tbl.value12 = function(arg)
