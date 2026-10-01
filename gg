@@ -100,7 +100,20 @@ tbl.value12 = function(arg)
 	return nil
 end
 
-local v6 = Legitbot:addGroup()
+-- Ensure Legitbot exists before calling methods on it, with a safe fallback
+local v6
+if Legitbot and typeof(Legitbot.addGroup) == "function" then
+    v6 = Legitbot:addGroup()
+else
+    -- Fallback dummy object so the rest of the script doesn't break
+    v6 = {
+        addGroup = function() return {} end,
+        addToggle = function() return {} end,
+        addSlider = function() return {} end,
+        addDropdown = function() return {} end,
+    }
+    warn("Legitbot was nil at line 103, using fallback.")
+end
 
 v6:addToggle("Fly", function(value17)
 	tbl.value17 = value17
